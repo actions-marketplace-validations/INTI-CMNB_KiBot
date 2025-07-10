@@ -1134,6 +1134,20 @@ class SchematicComponentV6(SchematicComponent):
             raise SchError('Footprint with more than one colon (`{}`)'.format(fp))
         self.set_field('Footprint', fp)
 
+    def copy(self):
+        """ Make a deep copy, but not for all """
+        # Don't copy the links to projects, parent_sheet and library symbol
+        projects = self.projects
+        parent_sheet = self.parent_sheet
+        lib_symbol = self.lib_symbol
+        self.projects = self.parent_sheet = self.lib_symbol = None
+        # All the rest is copied
+        new_c = deepcopy(self)
+        new_c.projects = self.projects = projects
+        new_c.parent_sheet = self.parent_sheet = parent_sheet
+        new_c.lib_symbol = self.lib_symbol = lib_symbol
+        return new_c
+
     @staticmethod
     def get_lib_and_name(comp, i, name):
         comp.lib_id = comp.name = _check_str(i, 1, name+' lib_id')

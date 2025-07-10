@@ -424,7 +424,7 @@ def get_board_comps_data(comps):
             comps.append(c)
         if c.has_pcb_info:
             # We already got this reference and filled the PCB info, this is another copy
-            c = deepcopy(c)
+            c = c.copy()
             comps.append(c)
         new_value = m.GetValue()
         if new_value != c.value and '${' not in c.value:
