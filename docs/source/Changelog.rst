@@ -40,6 +40,8 @@ Fixed
 -  User.N layer numbering. I.e. pcb_print issues with their numbering
    (#808)
 -  KiCost: ``kicost_config`` not working (#815)
+-  Huge memory usage for panels (#842)
+-  Panelize: vjustify wrong choices (were the same as hjustify) (#846)
 
 Changed
 ~~~~~~~

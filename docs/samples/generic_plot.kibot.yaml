@@ -2946,7 +2946,7 @@ outputs:
             thickness: 0.3
             # [string='none'] [none,simple] Currently fixed. BTW: don't ask me about this ridiculous default, is how KiKit works
             type: 'none'
-            # [string='center'] [left,right,center] Vertical justification of the text
+            # [string='center'] [top,bottom,center] Vertical justification of the text
             vjustify: 'center'
             # [number|string=0] Specify the vertical offset from anchor. Respects KiCAD coordinate system
             voffset: 0
@@ -2982,7 +2982,7 @@ outputs:
             thickness: 0.3
             # [string='none'] [none,simple] Currently fixed. BTW: don't ask me about this ridiculous default, is how KiKit works
             type: 'none'
-            # [string='center'] [left,right,center] Vertical justification of the text
+            # [string='center'] [top,bottom,center] Vertical justification of the text
             vjustify: 'center'
             # [number|string=0] Specify the vertical offset from anchor. Respects KiCAD coordinate system
             voffset: 0
@@ -3018,7 +3018,7 @@ outputs:
             thickness: 0.3
             # [string='none'] [none,simple] Currently fixed. BTW: don't ask me about this ridiculous default, is how KiKit works
             type: 'none'
-            # [string='center'] [left,right,center] Vertical justification of the text
+            # [string='center'] [top,bottom,center] Vertical justification of the text
             vjustify: 'center'
             # [number|string=0] Specify the vertical offset from anchor. Respects KiCAD coordinate system
             voffset: 0
@@ -3054,7 +3054,7 @@ outputs:
             thickness: 0.3
             # [string='none'] [none,simple] Currently fixed. BTW: don't ask me about this ridiculous default, is how KiKit works
             type: 'none'
-            # [string='center'] [left,right,center] Vertical justification of the text
+            # [string='center'] [top,bottom,center] Vertical justification of the text
             vjustify: 'center'
             # [number|string=0] Specify the vertical offset from anchor. Respects KiCAD coordinate system
             voffset: 0

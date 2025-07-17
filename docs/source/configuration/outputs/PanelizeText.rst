@@ -22,7 +22,7 @@ PanelizeText parameters
 -  ``orientation`` :index:`: <pair: output - panelize - options - configs - text4; orientation>` [:ref:`number <number>` | :ref:`string <string>`] (default: ``0``) Specify the orientation (angle).
 -  ``plugin`` :index:`: <pair: output - panelize - options - configs - text4; plugin>` [:ref:`string <string>`] (default: ``''``) Specify the plugin that provides extra variables for the text.
 -  ``thickness`` :index:`: <pair: output - panelize - options - configs - text4; thickness>` [:ref:`number <number>` | :ref:`string <string>`] (default: ``0.3``) Stroke thickness.
--  ``vjustify`` :index:`: <pair: output - panelize - options - configs - text4; vjustify>` [:ref:`string <string>`] (default: ``'center'``) (choices: "left", "right", "center") Vertical justification of the text.
+-  ``vjustify`` :index:`: <pair: output - panelize - options - configs - text4; vjustify>` [:ref:`string <string>`] (default: ``'center'``) (choices: "top", "bottom", "center") Vertical justification of the text.
 -  ``voffset`` :index:`: <pair: output - panelize - options - configs - text4; voffset>` [:ref:`number <number>` | :ref:`string <string>`] (default: ``0``) Specify the vertical offset from anchor. Respects KiCAD coordinate system.
 -  ``width`` :index:`: <pair: output - panelize - options - configs - text4; width>` [:ref:`number <number>` | :ref:`string <string>`] (default: ``1.5``) Width of the characters (the same parameters as KiCAD uses).
 
