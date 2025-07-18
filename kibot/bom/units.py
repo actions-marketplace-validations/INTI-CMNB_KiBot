@@ -227,9 +227,10 @@ def comp_match(component, ref_prefix, ref=None, relax_severity=False, stronger=F
                 # Cache the result
                 parser_cache[original+ref_prefix] = parsed
                 return parsed
-            else
+            else:
                 result = None
-                
+                log_func_warn(W_EXTRAINVAL+f"Malformed value: `{original}` (avoid adding extra information in the value)")
+
     if not result:
         # Failed with the regex, try with the parser
         result = parse(ref_prefix[0]+' '+with_commas, with_extra=True, stronger=stronger)
