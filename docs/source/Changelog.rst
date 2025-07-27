@@ -29,6 +29,10 @@ Added
    -  PCB2Blender_2_17: generates a pcb2blender 2.17 file to import on
       Blender
 
+-  Pre-flights:
+
+   -  ``check_fiel``: option to exclude components from a check (#848)
+
 -  PCB2Blender_Tools: Experimental v2.17 file generation
 -  Report: separated N/PTH slot sizes (#824)
 -  VRML: workaround for KiCad 9 randomly failing to copy 3D models

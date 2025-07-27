@@ -5,6 +5,7 @@
 # Project: KiBot (formerly KiPlot)
 import re
 from .error import KiPlotConfigurationError
+from .fil_base import BaseFilter
 from .kiplot import load_sch
 from .misc import CHECK_FIELD, W_CHKFLD, pretty_list
 from .optionable import Optionable
@@ -59,6 +60,8 @@ class FieldCheck(Optionable):
                 to the *numeric_reference* value """
             self.numeric_reference = 0
             """ Value to compare using *numeric_condition* """
+            self.exclude_filter = Optionable
+            """ [string|list(string)='_null'] Name of the filter to exclude components from processing """
         self._field_example = 'temperature'
 
     def __str__(self):
@@ -78,6 +81,7 @@ class FieldCheck(Optionable):
             raise KiPlotConfigurationError(f'Wrong regular expression: `{self.regex}` ({e})')
         if self.numeric_condition != 'none' and self._regex.groups < 1:
             raise KiPlotConfigurationError(f'No groups in regular expression: `{self.regex}`')
+        self.exclude_filter = BaseFilter.solve_filter(self.exclude_filter, 'exclude_filter')
 
 
 @pre_class
@@ -125,6 +129,9 @@ class Check_Fields(BasePreFlight):  # noqa: F821
         for c in comps:
             checked_fields = {'reference', 'value', 'footprint', 'datasheet', 'description', 'part'}
             for check in self.check_fields:
+                # If this check has a an exclude filter and the component is excluded:  skip
+                if check.exclude_filter and check.exclude_filter.filter(c):
+                    continue
                 field = check.field.lower()
                 if field == '*':
                     # Special case. This is a check for extra fields
