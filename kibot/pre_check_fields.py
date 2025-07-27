@@ -129,7 +129,7 @@ class Check_Fields(BasePreFlight):  # noqa: F821
         for c in comps:
             checked_fields = {'reference', 'value', 'footprint', 'datasheet', 'description', 'part'}
             for check in self.check_fields:
-                # If this check has a an exclude filter and the component is excluded:  skip
+                # Skip it if this check has an exclude filter and the component is excluded
                 if check.exclude_filter and check.exclude_filter.filter(c):
                     continue
                 field = check.field.lower()
