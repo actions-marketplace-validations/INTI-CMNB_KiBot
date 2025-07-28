@@ -31,7 +31,7 @@ Added
 
 -  Pre-flights:
 
-   -  ``check_fiel``: option to exclude components from a check (#848)
+   -  ``check_field``: option to exclude components from a check (#848)
 
 -  PCB2Blender_Tools: Experimental v2.17 file generation
 -  Report: separated N/PTH slot sizes (#824)
