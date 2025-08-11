@@ -22,6 +22,7 @@ PROFILE_PLOT = False
 if PROFILE_PLOT:
     import cProfile
 import os
+from subprocess import CalledProcessError
 # Here we import the whole module to make monkeypatch work
 from .error import KiPlotConfigurationError
 from .kiplot import load_sch, get_board_comps_data, run_command
@@ -46,7 +47,13 @@ def pcbdraw_warnings(tag, msg):
 
 
 def _run_command(cmd):
-    run_command(cmd, err_lvl=PCBDRAW_ERR)
+    try:
+        run_command(cmd, err_lvl=PCBDRAW_ERR, just_raise=True)
+    except CalledProcessError as e:
+        output = e.stdout or e.stderr
+        if '--unlimited' in output.decode():
+            cmd.remove('--unlimited')
+            return run_command(cmd, err_lvl=PCBDRAW_ERR)
 
 
 class PcbDrawStyle(Optionable):

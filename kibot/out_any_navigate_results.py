@@ -105,6 +105,9 @@ def _run_command(cmd):
         cmd_output = subprocess.check_output(cmd, stderr=subprocess.STDOUT)
     except subprocess.CalledProcessError as e:
         odecoded = e.output.decode() if e.output else None
+        if '--unlimited' in odecoded:
+            cmd.remove('--unlimited')
+            return _run_command(cmd)
         if odecoded:
             logger.debug('Output from command: '+odecoded)
         logger.non_critical_error(f'Failed to run {cmd[0]}, error {e.returncode}')

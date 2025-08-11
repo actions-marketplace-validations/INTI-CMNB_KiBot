@@ -38,6 +38,7 @@ import os
 import importlib
 from pcbnew import B_Cu, B_Mask, F_Cu, F_Mask, FromMM, IsCopperLayer, LSET, PLOT_CONTROLLER, PLOT_FORMAT_SVG
 from shutil import rmtree, copy2
+from subprocess import CalledProcessError
 import sys
 from .error import KiPlotConfigurationError
 from .fil_base import BaseFilter, apply_exclude_filter
@@ -93,7 +94,13 @@ def pcbdraw_warnings(tag, msg):
 
 
 def _run_command(cmd):
-    run_command(cmd, err_lvl=PDF_PCB_PRINT)
+    try:
+        run_command(cmd, err_lvl=PDF_PCB_PRINT, just_raise=True)
+    except CalledProcessError as e:
+        output = e.stdout or e.stderr
+        if '--unlimited' in output.decode():
+            cmd.remove('--unlimited')
+            return run_command(cmd, err_lvl=PDF_PCB_PRINT)
 
 
 def hex_to_rgb(value):
