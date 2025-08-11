@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - PCB2Blender_Tools: Experimental v2.17 file generation
 - Report: separated N/PTH slot sizes (#824)
 - VRML: workaround for KiCad 9 randomly failing to copy 3D models (#804)
+- Navigate Results, PCB Print, PcbDraw: Support for big SVGs (#851)
 
 ### Fixed
 - User.N layer numbering. I.e. pcb_print issues with their numbering (#808)

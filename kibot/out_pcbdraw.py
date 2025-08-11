@@ -486,7 +486,7 @@ class PcbDrawOptions(VariantOptions):
         if self.rsvg_command:
             logger.debug('Converting {} -> {}'.format(svg_save_output_name, save_output_name))
             cmd = [self.rsvg_command, '--dpi-x', str(self.dpi), '--dpi-y', str(self.dpi),
-                   '--output', save_output_name, '--format', 'png', svg_save_output_name]
+                   '--output', save_output_name, '--format', 'png', '--unlimited', svg_save_output_name]
             _run_command(cmd)
             os.remove(svg_save_output_name)
         # Do we need to convert the saved file? (JPG/BMP)

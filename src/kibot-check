@@ -1211,7 +1211,11 @@ deps = '{\
                 "mandatory": false,\
                 "max_version": null,\
                 "output": "bom",\
-                "version": null\
+                "version": [\
+                    2,\
+                    40,\
+                    3\
+                ]\
             },\
             {\
                 "all_versions": {},\
@@ -1219,7 +1223,11 @@ deps = '{\
                 "mandatory": false,\
                 "max_version": null,\
                 "output": "navigate_results",\
-                "version": null\
+                "version": [\
+                    2,\
+                    40,\
+                    3\
+                ]\
             },\
             {\
                 "all_versions": {},\
@@ -1227,7 +1235,11 @@ deps = '{\
                 "mandatory": false,\
                 "max_version": null,\
                 "output": "navigate_results",\
-                "version": null\
+                "version": [\
+                    2,\
+                    40,\
+                    3\
+                ]\
             },\
             {\
                 "all_versions": {},\
@@ -1235,7 +1247,11 @@ deps = '{\
                 "mandatory": false,\
                 "max_version": null,\
                 "output": "navigate_results_rb",\
-                "version": null\
+                "version": [\
+                    2,\
+                    40,\
+                    3\
+                ]\
             },\
             {\
                 "all_versions": {},\
@@ -1243,7 +1259,11 @@ deps = '{\
                 "mandatory": false,\
                 "max_version": null,\
                 "output": "navigate_results_rb",\
-                "version": null\
+                "version": [\
+                    2,\
+                    40,\
+                    3\
+                ]\
             },\
             {\
                 "all_versions": {},\
@@ -1251,7 +1271,11 @@ deps = '{\
                 "mandatory": false,\
                 "max_version": null,\
                 "output": "pcb_print",\
-                "version": null\
+                "version": [\
+                    2,\
+                    40,\
+                    3\
+                ]\
             },\
             {\
                 "all_versions": {},\
@@ -1259,7 +1283,11 @@ deps = '{\
                 "mandatory": false,\
                 "max_version": null,\
                 "output": "pcbdraw",\
-                "version": null\
+                "version": [\
+                    2,\
+                    40,\
+                    3\
+                ]\
             }\
         ],\
         "tests": [\

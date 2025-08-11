@@ -1299,8 +1299,8 @@ class PCB_PrintOptions(VariantOptions):
         # We use a 5x scale and then reduce it to maintain the page size
         # Note: rsvg 2.50.3 has this problem 2.54.5 doesn't, so we ensure the size is correct, not a fixed scale
         dpi = str(self.dpi)
-        cmd = [self.rsvg_command, '-d', dpi, '-p', dpi, '-f', 'pdf', '-o', os.path.join(input_folder, pdf_file),
-               os.path.join(input_folder, svg_file)]
+        cmd = [self.rsvg_command, '-d', dpi, '-p', dpi, '-f', 'pdf', '--unlimited', '-o',
+               os.path.join(input_folder, pdf_file), os.path.join(input_folder, svg_file)]
         _run_command(cmd)
 
     # We can't control the resolution in this way

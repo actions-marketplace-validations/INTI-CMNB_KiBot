@@ -204,7 +204,7 @@ class Any_Navigate_ResultsOptions(BaseOptions):
             node[out.name] = out
 
     def svg_to_png(self, svg_file, png_file, width):
-        cmd = [self.rsvg_command, '-w', str(width), '-f', 'png', '-o', png_file, svg_file]
+        cmd = [self.rsvg_command, '-w', str(width), '-f', 'png', '--unlimited', '-o', png_file, svg_file]
         return _run_command(cmd)
 
     def copy(self, img, width):

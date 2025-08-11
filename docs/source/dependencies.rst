@@ -89,17 +89,17 @@
    -  Find commit hash and/or date for `sch_replace`
    -  Find commit hash and/or date for `set_text_variables`
 
-`RSVG tools <https://gitlab.gnome.org/GNOME/librsvg>`__ :index:`: <pair: dependency; RSVG tools>`  |image37| |image38| |Auto-download|
+`RSVG tools <https://gitlab.gnome.org/GNOME/librsvg>`__ :index:`: <pair: dependency; RSVG tools>`  v2.40.3 |image37| |image38| |Auto-download|
 
 -  Optional to:
 
-   -  SVG logos for the BoM for `bom`
-   -  Create outputs preview for `navigate_results`
-   -  Create PNG icons for `navigate_results`
-   -  Create outputs preview for `navigate_results_rb`
-   -  Create PNG icons for `navigate_results_rb`
-   -  Create PDF, PNG, PS and EPS formats for `pcb_print`
-   -  Create PNG, JPG and BMP images for `pcbdraw`
+   -  SVG logos for the BoM for `bom` (v2.40.3)
+   -  Create outputs preview for `navigate_results` (v2.40.3)
+   -  Create PNG icons for `navigate_results` (v2.40.3)
+   -  Create outputs preview for `navigate_results_rb` (v2.40.3)
+   -  Create PNG icons for `navigate_results_rb` (v2.40.3)
+   -  Create PDF, PNG, PS and EPS formats for `pcb_print` (v2.40.3)
+   -  Create PNG, JPG and BMP images for `pcbdraw` (v2.40.3)
 
 `ImageMagick <https://imagemagick.org/>`__ :index:`: <pair: dependency; ImageMagick>`  |image39| |image40| |Auto-download|
 

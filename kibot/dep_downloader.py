@@ -40,6 +40,7 @@ Dependencies:
     arch: librsvg
     command: rsvg-convert
     downloader: rsvg
+    version: 2.40.3
     id: RSVG
     tests:
       - command: [convert, -list, font]

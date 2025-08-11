@@ -37,6 +37,7 @@ Added
 -  Report: separated N/PTH slot sizes (#824)
 -  VRML: workaround for KiCad 9 randomly failing to copy 3D models
    (#804)
+-  Navigate Results, PCB Print, PcbDraw: Support for big SVGs (#851)
 
 Fixed
 ~~~~~
