@@ -264,7 +264,7 @@ class PcbDrawOptions(VariantOptions):
                 self.bottom = bot
         super().config(parent)
         # V-CUTS layer
-        self._vcuts_layer = Layer.solve(self.vcuts_layer)[0]._id if self.vcuts else 41
+        self._vcuts_layer = Layer.solve(self.vcuts_layer or 'Cmts.User')[0]._id
         # Highlight
         self._highlight = self.solve_kf_filters(self.highlight)
         # Margin

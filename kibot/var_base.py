@@ -11,6 +11,7 @@ from .registrable import RegVariant
 from .optionable import Optionable, PanelOptions
 from .fil_base import apply_exclude_filter, apply_fitted_filter, apply_fixed_filter, apply_pre_transform
 from .error import KiPlotConfigurationError
+from .layer import Layer
 from .misc import KIKIT_UNIT_ALIASES
 from .gs import GS
 from .kiplot import run_command
@@ -72,6 +73,9 @@ class SubPCBOptions(PanelOptions):
                 This is the reference for the `kikit:Board` footprint used to identify the sub-PCB.
                 Note that you can use any footprint as long as its position is inside the PCB outline.
                 When empty the sub-PCB is specified using a rectangle """
+            self.ref_layer = 'Edge.Cuts'
+            """ Layer where the PCB outline indicated by `reference` is found.
+                So you can use an outline that is not the real PCB contour """
             self.ref = None
             """ {reference} """
             self.tlx = 0
@@ -129,10 +133,13 @@ class SubPCBOptions(PanelOptions):
         if not self._tolerance and GS.ki5:
             # KiCad 5 workaround: rounding issues generate 1 fm of error. So we change to 2 fm tolerance.
             self._tolerance = 2
+        # Reference layer
+        self._ref_layer = Layer.solve(self.ref_layer or 'Edge.Cuts')[0]._id
 
     def get_separate_source(self):
         if self.reference:
             src = "annotation; ref: {}".format(self.reference)
+            # TODO: add self._ref_layer when https://github.com/yaqwsx/KiKit/pull/846 is available
         else:
             src = "rectangle; tlx: {}; tly: {}; brx: {}; bry: {}".format(self.tlx, self.tly, self.brx, self.bry)
         if self._tolerance:
@@ -213,7 +220,7 @@ class SubPCBOptions(PanelOptions):
         """ Get a list of PCB shapes from the Edge.Cuts layer.
             Only useful elements are returned. """
         edges = []
-        layer_cuts = GS.board.GetLayerID('Edge.Cuts')
+        layer_cuts = self._ref_layer
         for edge in chain(GS.board.GetDrawings(), *[m.GraphicalItems() for m in GS.get_modules()]):
             if edge.GetLayer() != layer_cuts or edge.GetClass().startswith('PCB_DIM_') or not GS.is_valid_pcb_shape(edge):
                 continue
