@@ -14,7 +14,7 @@ from .bom.units import comp_match
 from .EasyEDA.easyeda_3d import download_easyeda_3d_model
 from .fil_base import reset_filters
 from .misc import (W_MISS3D, W_FAILDL, W_DOWN3D, DISABLE_3D_MODEL_TEXT, W_BADTOL, W_BADRES, W_RESVALISSUE, W_RES3DNAME,
-                   EMBED_PREFIX, get_file_hash)
+                   W_MISSWRL, EMBED_PREFIX, get_file_hash)
 from .gs import GS
 from .optionable import Optionable
 from .out_base import VariantOptions, BaseOutput
@@ -371,6 +371,17 @@ class Base3DOptions(VariantOptions):
     def do_colored_tht_resistor(self, name, c, changed):
         if not GS.global_colored_tht_resistors or not self.is_tht_resistor(name) or c is None:
             return name
+
+        base, ext = os.path.splitext(name)
+        if ext != '.wrl':
+            wrl_version = base + '.wrl'
+            if os.path.isfile(wrl_version):
+                logger.debug('Using WRL version for {} for generating resistor colors'.format(c.ref))
+                name = wrl_version
+            else:
+                logger.warning(W_MISSWRL+'Missing WRL 3D model for resistor colors: `{}`'.format(name))
+                return name
+
         # Find the length of the resistor (is in the name of the 3D model)
         m = re.search(r"L([\d\.]+)mm", name)
         if not m:
