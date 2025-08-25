@@ -52,6 +52,8 @@ Fixed
 -  KiCost: ``kicost_config`` not working (#815)
 -  Huge memory usage for panels (#842)
 -  Panelize: vjustify wrong choices (were the same as hjustify) (#846)
+-  THT Resistors: Problems when using the STEP version of the model
+   (#856)
 
 Changed
 ~~~~~~~
