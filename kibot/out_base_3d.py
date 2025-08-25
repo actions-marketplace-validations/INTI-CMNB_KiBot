@@ -373,19 +373,19 @@ class Base3DOptions(VariantOptions):
             return name
 
         base, ext = os.path.splitext(name)
-        if ext != '.wrl':
+        if ext.lower() != '.wrl':
             wrl_version = base + '.wrl'
             if os.path.isfile(wrl_version):
-                logger.debug('Using WRL version for {} for generating resistor colors'.format(c.ref))
+                logger.debug(f'Using WRL version for {c.ref} for generating resistor colors')
                 name = wrl_version
             else:
-                logger.warning(W_MISSWRL+'Missing WRL 3D model for resistor colors: `{}`'.format(name))
+                logger.warning(W_MISSWRL+f'Missing WRL 3D model for resistor colors: `{name}`')
                 return name
 
         # Find the length of the resistor (is in the name of the 3D model)
         m = re.search(r"L([\d\.]+)mm", name)
         if not m:
-            logger.warning(W_RES3DNAME+'3D model for resistor without length: {}'.format(name))
+            logger.warning(W_RES3DNAME+f'3D model for resistor without length: {name}')
             return name
         r_len = float(m.group(1))
         # THT Resistor that we want to add colors
@@ -395,7 +395,7 @@ class Base3DOptions(VariantOptions):
             return name
         val = res.get_decimal()
         if val < Decimal('0.01'):
-            logger.warning(W_BADRES+'Resistor {} out of range, minimum value is 10 mOhms'.format(c.ref))
+            logger.warning(W_BADRES+f'Resistor {c.ref} out of range, minimum value is 10 mOhms')
             return name
         val_str = "{0:.0f}".format(val*100)
         # Check the tolerance (from the schematic fields)
@@ -405,7 +405,7 @@ class Base3DOptions(VariantOptions):
             tol = res.get_extra('tolerance')
             if not tol:
                 tol = GS.global_default_resistor_tolerance
-                logger.warning(W_BADTOL+'Missing tolerance for {}, using {}%'.format(c.ref, tol))
+                logger.warning(W_BADTOL+f'Missing tolerance for {c.ref}, using {tol}%')
         else:
             tol = tol.strip()
             if tol[-1] == '%':
@@ -413,10 +413,10 @@ class Base3DOptions(VariantOptions):
             try:
                 tol = float(tol)
             except ValueError:
-                logger.warning(W_BADTOL+'Malformed tolerance for {}: `{}`'.format(c.ref, tol))
+                logger.warning(W_BADTOL+f'Malformed tolerance for {c.ref}: `{tol}`')
                 return name
         if tol not in TOL_COLORS:
-            logger.warning(W_BADTOL+'Unknown tolerance for {}: `{}`'.format(c.ref, tol))
+            logger.warning(W_BADTOL+f'Unknown tolerance for {c.ref}: `{tol}`')
             return name
         tol_color = TOL_COLORS[tol]
         # Find how many bars we'll use
@@ -439,7 +439,7 @@ class Base3DOptions(VariantOptions):
         # Max is all 99 with 9 as multiplier
         max_val = pow(10, dig_bars)-1
         if val > max_val*1e9:
-            logger.warning(W_BADRES+'Resistor {} out of range, maximum value is {} GOhms'.format(c.ref, max_val))
+            logger.warning(W_BADRES+f'Resistor {c.ref} out of range, maximum value is {max_val} GOhms')
             return name
         # Fill the digits
         for bar in range(dig_bars):
@@ -447,7 +447,7 @@ class Base3DOptions(VariantOptions):
         # Make sure we don't have digits that can't be represented
         rest = val_str[dig_bars:]
         if rest and not all((x == '0' for x in rest)):
-            logger.warning(W_RESVALISSUE+'Digits not represented in {} {} ({} %)'.format(c.ref, c.value, tol))
+            logger.warning(W_RESVALISSUE+f'Digits not represented in {c.ref} {c.value} ({tol} %)')
         bars[nbars-1] = tol_color
         # For 20% remove the last bar
         if tol_color == 12:
@@ -463,7 +463,7 @@ class Base3DOptions(VariantOptions):
             self.create_colored_tht_resistor(name, cache_name, bars, r_len)
         changed[0] = True
         # Show the result
-        logger.debug(' - {} {} {}% {} ({})'.format(c.ref, c.value, tol, bars, status))
+        logger.debug(f' - {c.ref} {c.value} {tol}% {bars} ({status})')
         return cache_name
 
     def replace_model(self, replace, m3d, force_wrl, is_copy_mode, rename_function, rename_data):
