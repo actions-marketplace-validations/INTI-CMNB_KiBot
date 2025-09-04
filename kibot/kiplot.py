@@ -221,12 +221,20 @@ def load_board(pcb_file=None, forced=False):
             raise KiPlotConfigurationError(f"Unknown layer used for the global `work_layer` option"
                                            f" (`{GS.global_work_layer}`)")
 
-        if GS.global_invalidate_pcb_text_cache == 'yes' and GS.ki6:
+        if (GS.global_invalidate_pcb_text_cache == 'yes' or GS.global_update_pcb_text_cache == 'yes') and GS.ki6:
             # Workaround for unexpected KiCad behavior:
             # https://gitlab.com/kicad/code/kicad/-/issues/14360
             logger.debug('Current PCB text variables cache: {}'.format(board.GetProperties().items()))
-            logger.debug('Removing cached text variables')
-            board.SetProperties(pcbnew.MAP_STRING_STRING())
+
+            props = pcbnew.MAP_STRING_STRING()
+
+            if GS.global_update_pcb_text_cache == 'yes':
+                for k, v in GS.load_pro_variables().items():
+                    props[k] = v
+                logger.debug('Updating cached text variables')
+            else:
+                logger.debug('Removing cached text variables')
+            board.SetProperties(props)
             # Save the PCB, so external tools also gets the reset, i.e. panelize, see #652
             GS.save_pcb(pcb_file, board)
         if BasePreFlight.get_option('check_zone_fills'):
