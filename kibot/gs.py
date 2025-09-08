@@ -185,6 +185,7 @@ class GS(object):
     global_git_diff_strategy = None
     global_impedance_controlled = None
     global_invalidate_pcb_text_cache = None
+    global_update_pcb_text_cache = None
     global_kiauto_time_out_scale = None
     global_kiauto_wait_start = None
     global_layer_defaults = None
