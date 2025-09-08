@@ -148,11 +148,13 @@
          KiCad 6: you should set this in the Board Setup -> Physical Stackup.
       -  ``include_components_from_pcb`` :index:`: <pair: global options; include_components_from_pcb>` [:ref:`boolean <boolean>`] (default: ``true``) Include components that are only in the PCB, not in the schematic, for filter and variants processing.
          Note that version 1.6.3 and older ignored them.
-      -  ``invalidate_pcb_text_cache`` :index:`: <pair: global options; invalidate_pcb_text_cache>` [:ref:`string <string>`] (default: ``'auto'``) (choices: "auto", "yes", "no") Remove any cached text variable in the PCB. This is needed in order to force a text
-         variables update when using `set_text_variables`. You might want to disable it when applying some
-         changes to the PCB and create a new copy to send to somebody without changing the cached values. |br|
-         Note that it will save the PCB with the cache erased. |br|
-         The `auto` value will remove the cached values only when using `set_text_variables`.
+      -  ``invalidate_pcb_text_cache`` :index:`: <pair: global options; invalidate_pcb_text_cache>` [:ref:`string <string>`] (default: ``'auto'``) (choices: "auto", "yes", "no") Clear the text variables cache in the PCB file. This is needed in order to force KiCad to read
+         updated text variables from the project file when they are changed with `set_text_variables`. You might want to
+         disable it when applying some changes to the PCB and create a new copy to send to somebody without changing the
+         cached values. |br|
+         The `auto` value will remove the cached values only when using `set_text_variables`. |br|
+         Note that at least one of the `invalidate_pcb_text_cache` and `update_pcb_text_cache` config values must be set
+         to 'no', otherwise an error is produced. |br|.
       -  ``kiauto_time_out_scale`` :index:`: <pair: global options; kiauto_time_out_scale>` [:ref:`number <number>`] (default: ``0.0``) Time-out multiplier for KiAuto operations.
       -  ``kiauto_wait_start`` :index:`: <pair: global options; kiauto_wait_start>` [:ref:`number <number>`] (default: ``0``) Time to wait for KiCad in KiAuto operations.
       -  ``kicad_dnp_applied`` :index:`: <pair: global options; kicad_dnp_applied>` [:ref:`boolean <boolean>`] (default: ``true``) The KiCad v7 PCB flag *Do Not Populate* is applied to our fitted flag before running any filter.
@@ -189,7 +191,9 @@
          When using KiCad 9 you can just embed the fonts in the schematic/PCB.
       -  ``restore_project`` :index:`: <pair: global options; restore_project>` [:ref:`boolean <boolean>`] (default: ``false``) Restore the KiCad project after execution.
          Note that this option will undo operations like `set_text_variables`. |br|
-         Starting with 1.6.4 it also restores the PRL (Project Local Settings) and DRU (Design RUles) files.
+         Starting with 1.6.4 it also restores the PRL (Project Local Settings) and DRU (Design RUles) files. |br|
+         Also note that this doesn't apply to the PCB file. Options like `invalidate_pcb_text_cache` and
+         `update_pcb_text_cache` can change the PCB file.
       -  ``sch_image_prefix`` :index:`: <pair: global options; sch_image_prefix>` [:ref:`string <string>`] (default: ``'kibot_image'``) Prefix used to paste images from outputs. Used by some outputs.
          You must place a text box at the coordinates where you want to paste the image. |br|
          The width of the text box will be the width of the image. |br|
@@ -220,6 +224,12 @@
          This assumes you let KiCad fill this value and hence the time is in ISO format (YY-MM-DD).
       -  ``units`` :index:`: <pair: global options; units>` [:ref:`string <string>`] (default: ``''``) (choices: "millimeters", "inches", "mils") Default units. Affects `position`, `bom`, `panelize` and 'odb' outputs, and
          the `erc` and `drc` preflights. Also KiCad 6 dimensions.
+      -  ``update_pcb_text_cache`` :index:`: <pair: global options; update_pcb_text_cache>` [:ref:`string <string>`] (default: ``'no'``) (choices: "auto", "yes", "no") Update the text variables cache in the PCB file. This makes the PCB file self-contained (usable
+         without the project file next to it) by copying all text variables from the project file (possibly modified by
+         the `set_text_variables` preflight) into the PCB file (the cache is completely replaced). |br|
+         The `auto` value will update the cache only when using `set_text_variables`. |br|
+         Note that at least one of the `invalidate_pcb_text_cache` and `update_pcb_text_cache` config values must be set
+         to 'no', otherwise an error is produced. |br|.
       -  ``use_dir_for_preflights`` :index:`: <pair: global options; use_dir_for_preflights>` [:ref:`boolean <boolean>`] (default: ``true``) Use the global `dir` as subdir for the preflights.
       -  ``use_os_env_for_expand`` :index:`: <pair: global options; use_os_env_for_expand>` [:ref:`boolean <boolean>`] (default: ``true``) In addition to KiCad text variables also use the OS environment variables when expanding `${VARIABLE}`.
       -  ``use_pcb_fields`` :index:`: <pair: global options; use_pcb_fields>` [:ref:`boolean <boolean>`] (default: ``true``) When a PCB is processed also use fields defined in the PCB, for filter and variants processing.

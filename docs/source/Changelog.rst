@@ -24,6 +24,11 @@ Added
    -  -F, –fail-on-ignored: to return error even when using -D (#828)
 
 -  Schematic: Support for private fields (#812)
+-  Global options:
+
+   -  ``update_pcb_text_cache``: Used to copy the text variables from
+      the project to the PCB file (#860 #861)
+
 -  Internal templates:
 
    -  PCB2Blender_2_17: generates a pcb2blender 2.17 file to import on
