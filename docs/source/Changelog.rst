@@ -59,6 +59,7 @@ Fixed
 -  Panelize: vjustify wrong choices (were the same as hjustify) (#846)
 -  THT Resistors: Problems when using the STEP version of the model
    (#856)
+-  Fancy stackup: Limit the decimals of the copper weight to 2 (#864)
 
 Changed
 ~~~~~~~

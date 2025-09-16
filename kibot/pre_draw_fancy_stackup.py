@@ -295,7 +295,7 @@ def get_thickness(la, la_type=''):
             oz = la.thickness/35
             if int(oz) == oz:
                 oz = int(oz)
-            return f"{thickness} ({oz}oz)"
+            return f"{thickness} ({oz:.2f}oz)"
         return thickness
     return ''
 
