@@ -13,6 +13,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Global options:
   - `update_pcb_text_cache`: Used to copy the text variables from the project
     to the PCB file (#860 #861)
+  - `disable_kicad_cross_on_fab`: To avoid KiCad 9 crosses on Fab layer, so
+    only KiBot controls it (#866)
 - Internal templates:
   - PCB2Blender_2_17: generates a pcb2blender 2.17 file to import on Blender
 - Pre-flights:

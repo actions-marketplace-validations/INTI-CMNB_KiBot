@@ -170,6 +170,8 @@ class AnyLayerOptions(VariantOptions):
         plot_ctrl = PLOT_CONTROLLER(GS.board)
         # set up plot options for the whole output
         po = plot_ctrl.GetPlotOptions()
+        if GS.global_disable_kicad_cross_on_fab and hasattr(po, "SetCrossoutDNPFPsOnFabLayers"):
+            po.SetCrossoutDNPFPsOnFabLayers(False)
         self._configure_plot_ctrl(po, output_dir)
         # Gerber Job files aren't automagically created
         # We need to assist KiCad

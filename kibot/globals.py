@@ -200,10 +200,12 @@ class Globals(FiltersOptions):
             """ Layer on which to add DNP cross for the top components """
             self.dnp_cross_bottom_layer = 'B.Fab'
             """ Layer on which to add DNP cross for the bottom components """
+            self.disable_kicad_cross_on_fab = True
+            """ Disable KiCad cross on Fab layers, so only KiBot does it (KiCad 9+) """
             self.cross_no_body = False
-            """ Cross components even when they don't have a body. Only for KiCad 6 and internal cross """
+            """ Cross components even when they don't have a body. Only for KiCad 6 and internal cross (Schematic) """
             self.cross_using_kicad = True
-            """ When using KiCad 7+ let KiCad cross the components """
+            """ When using KiCad 7+ let KiCad cross the components (Schematic) """
             self.csv_accept_no_ref = False
             """ Accept aggregating CSV files without references (Experimental) """
             self.date_format = '%Y-%m-%d'

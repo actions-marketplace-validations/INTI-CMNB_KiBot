@@ -35,8 +35,8 @@
       -  ``copper_thickness`` :index:`: <pair: global options; copper_thickness>` [:ref:`number <number>` | :ref:`string <string>`] Copper thickness in micrometers (1 Oz is 35 micrometers).
          KiCad 6: you should set this in the Board Setup -> Physical Stackup.
       -  ``cross_footprints_for_dnp`` :index:`: <pair: global options; cross_footprints_for_dnp>` [:ref:`boolean <boolean>`] (default: ``true``) Draw a cross for excluded components in the `Fab` layer.
-      -  ``cross_no_body`` :index:`: <pair: global options; cross_no_body>` [:ref:`boolean <boolean>`] (default: ``false``) Cross components even when they don't have a body. Only for KiCad 6 and internal cross.
-      -  ``cross_using_kicad`` :index:`: <pair: global options; cross_using_kicad>` [:ref:`boolean <boolean>`] (default: ``true``) When using KiCad 7+ let KiCad cross the components.
+      -  ``cross_no_body`` :index:`: <pair: global options; cross_no_body>` [:ref:`boolean <boolean>`] (default: ``false``) Cross components even when they don't have a body. Only for KiCad 6 and internal cross (Schematic).
+      -  ``cross_using_kicad`` :index:`: <pair: global options; cross_using_kicad>` [:ref:`boolean <boolean>`] (default: ``true``) When using KiCad 7+ let KiCad cross the components (Schematic).
       -  ``csv_accept_no_ref`` :index:`: <pair: global options; csv_accept_no_ref>` [:ref:`boolean <boolean>`] (default: ``false``) Accept aggregating CSV files without references (Experimental).
       -  ``date_format`` :index:`: <pair: global options; date_format>` [:ref:`string <string>`] (default: ``'%Y-%m-%d'``) Format used for the day we started the script.
          Is also used for the PCB/SCH date formatting when `time_reformat` is enabled (default behavior). |br|
@@ -48,6 +48,7 @@
       -  ``dir`` :index:`: <pair: global options; dir>` [:ref:`string <string>`] (default: ``''``) Default pattern for the output directories. It also applies to the preflights, unless
          `use_dir_for_preflights` is disabled.
       -  ``disable_3d_alias_as_env`` :index:`: <pair: global options; disable_3d_alias_as_env>` [:ref:`boolean <boolean>`] (default: ``false``) Disable the use of environment and text variables as 3D models aliases.
+      -  ``disable_kicad_cross_on_fab`` :index:`: <pair: global options; disable_kicad_cross_on_fab>` [:ref:`boolean <boolean>`] (default: ``true``) Disable KiCad cross on Fab layers, so only KiBot does it (KiCad 9+).
       -  ``dnp_cross_bottom_layer`` :index:`: <pair: global options; dnp_cross_bottom_layer>` [:ref:`string <string>`] (default: ``'B.Fab'``) Layer on which to add DNP cross for the bottom components.
       -  ``dnp_cross_top_layer`` :index:`: <pair: global options; dnp_cross_top_layer>` [:ref:`string <string>`] (default: ``'F.Fab'``) Layer on which to add DNP cross for the top components.
       -  ``drc_exclusions_workaround`` :index:`: <pair: global options; drc_exclusions_workaround>` [:ref:`boolean <boolean>`] (default: ``false``) KiCad 6 introduced DRC exclusions. They are stored in the project but ignored by the Python API.

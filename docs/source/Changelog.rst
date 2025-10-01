@@ -28,6 +28,8 @@ Added
 
    -  ``update_pcb_text_cache``: Used to copy the text variables from
       the project to the PCB file (#860 #861)
+   -  ``disable_kicad_cross_on_fab``: To avoid KiCad 9 crosses on Fab
+      layer, so only KiBot controls it (#866)
 
 -  Internal templates:
 

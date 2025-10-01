@@ -227,6 +227,8 @@ class GS(object):
     global_kicad_dnp_applies_to_3D = None
     global_cross_using_kicad = None
     global_work_layer = None
+    # Only for KiCad 9+
+    global_disable_kicad_cross_on_fab = None
     pasteable_cmd = shlex.join if hasattr(shlex, 'join') else lambda x: str(x)   # novermin
 
     @staticmethod

@@ -1427,6 +1427,8 @@ class PCB_PrintOptions(VariantOptions):
         po.SetUseAuxOrigin(False)
         po.SetAutoScale(False)
         GS.SetSvgPrecision(po, self.svg_precision)
+        if GS.global_disable_kicad_cross_on_fab and hasattr(po, "SetCrossoutDNPFPsOnFabLayers"):
+            po.SetCrossoutDNPFPsOnFabLayers(False)
         return pc, po
 
     def set_visible(self, edge_id):
