@@ -1119,14 +1119,18 @@ class GS(object):
 
     @staticmethod
     def copper_layer_to_ordinal(n):
-        ordinal = pcbnew.CopperLayerToOrdinal(n)
-        # Adjust to the current PCB
-        if ordinal == pcbnew.CopperLayerToOrdinal(pcbnew.B_Cu):
-            ordinal = GS.board.GetCopperLayerCount()-1
-        return ordinal
+        if GS.ki9:
+            ordinal = pcbnew.CopperLayerToOrdinal(n)
+            # Adjust to the current PCB
+            if ordinal == pcbnew.CopperLayerToOrdinal(pcbnew.B_Cu):
+                ordinal = GS.board.GetCopperLayerCount()-1
+            return ordinal
+        # <= 8
+        return GS.board.GetCopperLayerCount()-1 if n == pcbnew.B_Cu else n
 
     @staticmethod
     def ordinal_to_copper_layer(n):
+        # Only for KiCad 9+
         if n == GS.board.GetCopperLayerCount()-1:
             return pcbnew.B_Cu
         if n == 0:

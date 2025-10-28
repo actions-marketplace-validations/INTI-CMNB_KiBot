@@ -33,7 +33,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Huge memory usage for panels (#842)
 - Panelize: vjustify wrong choices (were the same as hjustify) (#846)
 - THT Resistors: Problems when using the STEP version of the model (#856)
-- Fancy stackup: Limit the decimals of the copper weight to 2 (#864)
+- Fancy stackup:
+  - Limit the decimals of the copper weight to 2 (#864)
+  - Buried vias issues on KiCad 9 (#870)
+
 
 ### Changed
 - Filtered KiBot warnings are informed in the debug output (See #817)

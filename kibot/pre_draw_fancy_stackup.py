@@ -13,7 +13,7 @@ from .kiplot import load_board, get_output_targets, look_for_output
 from .layer import Layer
 from .optionable import Optionable
 from .macros import macros, document, pre_class  # noqa: F401
-from .misc import VIATYPE_THROUGH, VIATYPE_BLIND_BURIED, VIATYPE_MICROVIA, W_NOVIAS
+from .misc import VIATYPE_THROUGH, VIATYPE_BLIND_BURIED, VIATYPE_MICROVIA, W_NOVIAS, W_STACKUP
 from . import log
 import pcbnew
 logger = log.get_logger()
@@ -145,6 +145,9 @@ class SULayer:
         self.dielectric = ''
         self.layer_type = ''
         self.gerber = ''
+
+    def __str__(self):
+        return f"{self.layer} mat: {self.material} thick: {self.thickness} use: {self.layer_type} type: {self.type}"
 
 
 def draw_core(g, x, y, w, h, layer, offset, border_w=10000):
@@ -647,9 +650,7 @@ def create_stackup_matrix(stackup, via_layer_pairs, draw_vias):
 
 
 def get_layer_number(stackup, number):
-    copper_num = number
-    if number == pcbnew.B_Cu:
-        copper_num = GS.board.GetCopperLayerCount() - 1
+    copper_num = GS.copper_layer_to_ordinal(number)
 
     i = 0
     for n, layer in enumerate(stackup):
@@ -657,6 +658,8 @@ def get_layer_number(stackup, number):
             if i == copper_num:
                 return n
             i += 1
+    logger.warning(W_STACKUP+f"Wrong stack up? (layer id: {number} not found)")
+    return n
 
 
 def update_drawing(ops, parent):
