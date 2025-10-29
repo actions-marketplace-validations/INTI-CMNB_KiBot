@@ -1172,14 +1172,5 @@ class GS(object):
     def EDA_TEXT_GetTextBox(obj, a_line=-1):
         if GS.kicad_version_n >= KICAD_VERSION_9_0_5:
             # Wonderful! before the other, no default, etc.
-            # Any cleaner way?
-            # https://gitlab.com/kicad/code/kicad/-/issues/22155
-            pc = pcbnew.PLOT_CONTROLLER(GS.board)
-            pc.OpenPlotfile('', pcbnew.PLOT_FORMAT_PDF)
-            filename = pc.GetPlotFileName()
-            plt = pc.GetPlotter()
-            res = obj.GetTextBox(plt.RenderSettings(), a_line)
-            pc.ClosePlot()
-            os.remove(filename)
-            return res
+            return obj.GetTextBox(None, a_line)
         return obj.GetTextBox(a_line)
