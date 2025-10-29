@@ -36,7 +36,7 @@ import io
 import re
 import os
 import importlib
-from pcbnew import B_Cu, B_Mask, F_Cu, F_Mask, FromMM, IsCopperLayer, LSET, PLOT_CONTROLLER, PLOT_FORMAT_SVG
+from pcbnew import B_Cu, B_Mask, F_Cu, F_Mask, FromMM, IsCopperLayer, LSET, PLOT_CONTROLLER, PLOT_FORMAT_SVG, VECTOR2I
 from shutil import rmtree, copy2
 from subprocess import CalledProcessError
 import sys
@@ -836,9 +836,14 @@ class PCB_PrintOptions(VariantOptions):
             for pad in m.Pads():
                 layers = pad.GetLayerSet()
                 if GS.layers_contains(layers, id):
-                    layers.removeLayer(id)
-                    pad.SetLayerSet(layers)
-                    removed.append(pad)
+                    if GS.ki9:
+                        old_size = pad.GetSize()
+                        pad.SetSize(VECTOR2I(0, 0))
+                        removed.append((pad, old_size))
+                    else:
+                        layers.removeLayer(id)
+                        pad.SetLayerSet(layers)
+                        removed.append(pad)
         for e in GS.board.GetDrawings():
             if e.GetLayer() == id:
                 e.SetLayer(tmp_layer)
@@ -885,10 +890,14 @@ class PCB_PrintOptions(VariantOptions):
         # Restore everything
         for e in moved:
             e.SetLayer(id)
-        for pad in removed:
-            layers = pad.GetLayerSet()
-            layers.addLayer(id)
-            pad.SetLayerSet(layers)
+        if GS.ki9:
+            for pad, size in removed:
+                pad.SetSize(size)
+        else:
+            for pad in removed:
+                layers = pad.GetLayerSet()
+                layers.addLayer(id)
+                pad.SetLayerSet(layers)
         for (via, drill, width, top, bottom) in vias:
             via.SetDrill(drill)
             GS.set_via_width(via, width)
