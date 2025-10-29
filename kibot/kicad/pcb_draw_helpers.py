@@ -92,8 +92,9 @@ def draw_text(g, x, y, text, h, w, layer, bold=False, alignment=GR_TEXT_HJUSTIFY
 
     g.AddItem(nt)
     GS.board.Add(nt)
+    tb = GS.EDA_TEXT_GetTextBox(nt)
 
-    return nt, nt.GetTextBox().GetWidth()
+    return nt, tb.GetWidth()
 
 
 def remove_overbars(txt):
@@ -130,7 +131,8 @@ def get_text_width(text, w=10000, bold=False, font=None):
         nt.SetFont(font)
     nt.SetTextWidth(w)
     nt.SetBold(bold)
-    width = nt.GetTextBox().GetWidth()
+    tb = GS.EDA_TEXT_GetTextBox(nt)
+    width = tb.GetWidth()
     return width
 
 

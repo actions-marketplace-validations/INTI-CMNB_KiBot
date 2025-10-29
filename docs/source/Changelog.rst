@@ -66,6 +66,10 @@ Fixed
    -  Limit the decimals of the copper weight to 2 (#864)
    -  Buried vias issues on KiCad 9 (#870)
 
+-  Draw stackup, Print drill table, Include table:
+
+   -  Workaround for KiCad 9.0.5 broken API to GetTextBox
+
 Changed
 ~~~~~~~
 

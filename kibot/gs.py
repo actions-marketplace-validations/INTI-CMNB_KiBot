@@ -20,7 +20,7 @@ from shutil import copy2
 from sys import exit, exc_info
 import tempfile
 from traceback import extract_stack, format_list, print_tb
-from .misc import EXIT_BAD_ARGS, W_DATEFORMAT, W_UNKVAR, WRONG_INSTALL, CORRUPTED_PRO, hide_stderr
+from .misc import EXIT_BAD_ARGS, W_DATEFORMAT, W_UNKVAR, WRONG_INSTALL, CORRUPTED_PRO, hide_stderr, KICAD_VERSION_9_0_5
 from .log import get_logger
 
 logger = get_logger(__name__)
@@ -1167,3 +1167,19 @@ class GS(object):
         if GS.on_windows:
             return os.path.expanduser(os.path.join('~', 'AppData', 'Local', 'KiCad', ki_ver, 'embed', fname))
         return os.path.expanduser(os.path.join('~', '.cache', 'kicad', ki_ver, 'embed', fname))
+
+    @staticmethod
+    def EDA_TEXT_GetTextBox(obj, a_line=-1):
+        if GS.kicad_version_n >= KICAD_VERSION_9_0_5:
+            # Wonderful! before the other, no default, etc.
+            # Any cleaner way?
+            # https://gitlab.com/kicad/code/kicad/-/issues/22155
+            pc = pcbnew.PLOT_CONTROLLER(GS.board)
+            pc.OpenPlotfile('', pcbnew.PLOT_FORMAT_PDF)
+            filename = pc.GetPlotFileName()
+            plt = pc.GetPlotter()
+            res = obj.GetTextBox(plt.RenderSettings(), a_line)
+            pc.ClosePlot()
+            os.remove(filename)
+            return res
+        return obj.GetTextBox(a_line)
