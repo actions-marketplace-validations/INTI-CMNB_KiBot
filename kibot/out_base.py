@@ -367,6 +367,7 @@ class VariantOptions(BaseOptions):
             and blayer (bottom) """
         if comps_hash is None or not GS.global_cross_footprints_for_dnp:
             return
+        logger.debug("Crossing modules")
         # Cross the affected components
         ffab = board.GetLayerID('F.Fab')
         bfab = board.GetLayerID('B.Fab')
@@ -381,6 +382,7 @@ class VariantOptions(BaseOptions):
             brect = Rect()
             c = comps_hash.get(ref, None)
             if c and c.included and not c.fitted:
+                logger.debug(f"- {ref} crossed")
                 # Measure the component BBox (only graphics)
                 fp_angle = m.GetOrientationDegrees()
                 center = GS.p2v_k7(m.GetCenter())
