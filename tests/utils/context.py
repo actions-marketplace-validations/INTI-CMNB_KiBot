@@ -36,6 +36,7 @@ KICAD_VERSION_7_0_10 = 7000010
 KICAD_VERSION_7_0_11 = 7000011
 KICAD_VERSION_8_0_0 = 7099000
 KICAD_VERSION_9_0_0 = 9000000
+KICAD_VERSION_9_0_5 = 9000005
 MODE_SCH = 1
 MODE_PCB = 0
 # Defined as True to collect real world queries
@@ -58,7 +59,9 @@ if kicad_version >= KICAD_VERSION_5_99:
     if km > 9:
         km = 9
     BOARDS_DIR = '../board_samples/kicad_'+str(km)
-    if kicad_version >= KICAD_VERSION_9_0_0:
+    if kicad_version >= KICAD_VERSION_9_0_5:
+        REF_DIR = 'tests/reference/9_0_5'
+    elif kicad_version >= KICAD_VERSION_9_0_0:
         REF_DIR = 'tests/reference/9_0_1'
     elif kicad_version >= KICAD_VERSION_8_0_0:
         REF_DIR = 'tests/reference/8_0_0'
@@ -589,7 +592,7 @@ class TestContext(object):
         if trim:
             cmd = ['convert', image, '-trim', image]
             subprocess.run(cmd)
-        cmd = ['compare',
+        cmd = ['compare', '-density', '600',
                # Tolerate 5 % error in color
                '-fuzz', fuzz,
                # Count how many pixels differ
