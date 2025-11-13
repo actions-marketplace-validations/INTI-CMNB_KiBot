@@ -20,9 +20,10 @@ Export_3DOptions parameters
    - XAO: XAO (SALOME/Gmsh) format, used for FEM and simulations. |br|
    - BRep: Part of Open CASCADE Technology (OCCT).
 -  **no_virtual** :index:`: <pair: output - export_3d - options; no_virtual>` [:ref:`boolean <boolean>`] (default: ``false``) Used to exclude 3D models for components with 'virtual' attribute.
--  **origin** :index:`: <pair: output - export_3d - options; origin>` [:ref:`string <string>`] (default: ``'grid'``) (choices: "grid", "drill") (also accepts any string) Determines the coordinates origin. Using grid the coordinates are the same as you have in the
-   design sheet. |br|
-   The drill option uses the auxiliary reference defined by the user. |br|
+-  **origin** :index:`: <pair: output - export_3d - options; origin>` [:ref:`string <string>`] (default: ``'grid'``) (choices: "grid", "drill", "center") (also accepts any string) Determines the coordinates origin.
+   Using `grid` the coordinates are the same as you have in the design sheet. |br|
+   The `drill` option uses the auxiliary reference defined by the user. |br|
+   Using `center` you'll get the center of the board as origin. |br|
    You can define any other origin using the format 'X,Y', i.e. '3.2,-10'. Don't put units here. |br|
    The units used here are the ones specified by the `units` option.
 -  **output** :index:`: <pair: output - export_3d - options; output>` [:ref:`string <string>`] (default: ``'%f-%i%I%v.%x'``) Name for the generated 3D file (%i='3D' %x='step/glb/stl/xao/brep'). Affected by global options.

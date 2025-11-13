@@ -1421,9 +1421,10 @@ outputs:
       no_optimize_step: false
       # [boolean=false] Used to exclude 3D models for components with 'virtual' attribute
       no_virtual: false
-      # [string='grid'] [grid,drill,*] Determines the coordinates origin. Using grid the coordinates are the same as you have in the
-      # design sheet.
-      # The drill option uses the auxiliary reference defined by the user.
+      # [string='grid'] [grid,drill,center,*] Determines the coordinates origin.
+      # Using `grid` the coordinates are the same as you have in the design sheet.
+      # The `drill` option uses the auxiliary reference defined by the user.
+      # Using `center` you'll get the center of the board as origin.
       # You can define any other origin using the format 'X,Y', i.e. '3.2,-10'. Don't put units here.
       # The units used here are the ones specified by the `units` option
       origin: 'grid'

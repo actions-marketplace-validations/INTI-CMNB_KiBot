@@ -52,6 +52,7 @@ Added
 -  Navigate Results, PCB Print, PcbDraw: Support for big SVGs (#851)
 -  PCB Print: Workaround for KiCad 9.0.5 change in how holes are plotted
    when a layer is not included (black instead of white).
+-  Export_3D: ``center`` option to ``origin`` (#871)
 
 Fixed
 ~~~~~
@@ -511,7 +512,7 @@ Fixed:
 
    -  Problems with filters that change fields for components that are
       only in the PCB. (#628)
-   -  Use of ’_none’ filter in lists of filters and \_kf()
+   -  Use of ’\_none’ filter in lists of filters and \_kf()
 
 -  Variants:
 
@@ -710,7 +711,7 @@ Changed
 -  KiRi: continue even on corrupted schematics (#583)
 -  Variants: avoid W045 on nameless pads. Assuming they are on purpose
    and not real pads. (See #584)
--  BoardView: Skip footprints with no pads (not just REF**)
+-  BoardView: Skip footprints with no pads (not just REF*\*)
    (whitequark/kicad-boardview#14)
 
 .. _fixed-7:

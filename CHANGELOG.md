@@ -28,6 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Navigate Results, PCB Print, PcbDraw: Support for big SVGs (#851)
 - PCB Print: Workaround for KiCad 9.0.5 change in how holes are plotted when
   a layer is not included (black instead of white).
+- Export_3D: `center` option to `origin` (#871)
 
 ### Fixed
 - User.N layer numbering. I.e. pcb_print issues with their numbering (#808)
