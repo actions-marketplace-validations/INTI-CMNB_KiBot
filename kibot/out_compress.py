@@ -91,6 +91,8 @@ class CompressOptions(BaseOptions):
             """ Store the file pointed by symlinks, not the symlink """
             self.skip_not_run = False
             """ Skip outputs with `run_by_default: false` """
+            self.expand_dest = True
+            """ Also expand the `dest` file name (using % patterns) """
         super().__init__()
 
     def config(self, parent):
@@ -223,7 +225,8 @@ class CompressOptions(BaseOptions):
                 # Compute the destination directory inside the archive
                 dest = fname
                 if f.dest:
-                    dest = os.path.join(f.dest, os.path.basename(fname))
+                    dest_exp = f.expand_filename_both(f.dest, make_safe=False) if self.expand_dest else f.dest
+                    dest = os.path.join(dest_exp, os.path.basename(fname))
                 else:
                     dest = os.path.relpath(dest, out_dir)
                 files[fname_real] = dest

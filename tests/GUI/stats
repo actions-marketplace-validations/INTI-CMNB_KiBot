@@ -1,5 +1,5 @@
-53 outputs types with a total of 2128 different parameters
-Single type parameters: 1942 (91 %)
+53 outputs types with a total of 2129 different parameters
+Single type parameters: 1943 (91 %)
 Multi type parameters: 186 (9 %)
 Average parameters: 40
 Maximum number of parameters: 217
@@ -40,12 +40,12 @@ Outputs sorted by parameters:
 - download_datasheets: 23
 - jobset: 24
 - kicanvas: 24
-- compress: 25
 - dxf_sch_print: 25
 - pdf_sch_print: 25
 - ps_sch_print: 25
 - qr_lib: 25
 - svg_sch_print: 25
+- compress: 26
 - ipc2581: 26
 - kiri: 26
 - navigate_results: 26
@@ -148,7 +148,7 @@ Outputs sorted by depth:
 --------------------------------------------------------------------------------
 14 different data types
 -             String:  924
--            Boolean:  536
+-            Boolean:  537
 -             Number:  290
 - ListStringSingular:  288
 -             Choice:  110
@@ -164,7 +164,7 @@ Outputs sorted by depth:
 --------------------------------------------------------------------------------
 Used as single data type:
 -             String:  760 
--            Boolean:  471 
+-            Boolean:  472 
 - ListStringSingular:  285 
 -             Number:  196 
 -             Choice:  107 
@@ -403,8 +403,8 @@ Used as single data type:
 -              Number,String:   15 
 ================================================================================
 ================================================================================
-92 totals types with a total of 2507 different parameters
-Single type parameters: 2297 (92 %)
+92 totals types with a total of 2508 different parameters
+Single type parameters: 2298 (92 %)
 Multi type parameters: 210 (8 %)
 Average parameters: 27
 Maximum number of parameters: 217
@@ -481,7 +481,6 @@ Totals sorted by parameters:
 - jobset: 24
 - kicanvas: 24
 - kibom: 24
-- compress: 25
 - dxf_sch_print: 25
 - pdf_sch_print: 25
 - ps_sch_print: 25
@@ -489,6 +488,7 @@ Totals sorted by parameters:
 - svg_sch_print: 25
 - ibom: 25
 - kicost: 25
+- compress: 26
 - ipc2581: 26
 - kiri: 26
 - navigate_results: 26
@@ -631,7 +631,7 @@ Totals sorted by depth:
 --------------------------------------------------------------------------------
 14 different data types
 -             String: 1080
--            Boolean:  636
+-            Boolean:  637
 -             Number:  340
 - ListStringSingular:  318
 -             Choice:  142
@@ -647,7 +647,7 @@ Totals sorted by depth:
 --------------------------------------------------------------------------------
 Used as single data type:
 -             String:  900 
--            Boolean:  563 
+-            Boolean:  564 
 - ListStringSingular:  315 
 -             Number:  231 
 -             Choice:  139 

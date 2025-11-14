@@ -1971,6 +1971,13 @@
             "DataTypeBoolean"
           ],
           null
+        ],
+        [
+          "expand_dest",
+          [
+            "DataTypeBoolean"
+          ],
+          null
         ]
       ]
     ]
