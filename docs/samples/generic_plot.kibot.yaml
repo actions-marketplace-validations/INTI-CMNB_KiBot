@@ -935,6 +935,8 @@ outputs:
       # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the
       # variant
       exclude_filter: '_null'
+      # [boolean=true] Also expand the `dest` file name (using % patterns)
+      expand_dest: true
       # [list(dict)=[]] Which files will be included
       files:
         # [string=''] Destination directory inside the output dir, empty means the same of the file

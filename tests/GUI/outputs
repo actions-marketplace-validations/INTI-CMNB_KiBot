@@ -2125,6 +2125,13 @@
           null
         ],
         [
+          "expand_dest",
+          [
+            "DataTypeBoolean"
+          ],
+          null
+        ],
+        [
           "no_virtual",
           [
             "DataTypeBoolean"

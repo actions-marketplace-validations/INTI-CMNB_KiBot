@@ -25,6 +25,7 @@ Copy_FilesOptions parameters
    Can be used to fine-tune a variant for a particular output that needs extra filtering done before the
    variant.
 
+-  ``expand_dest`` :index:`: <pair: output - copy_files - options; expand_dest>` [:ref:`boolean <boolean>`] (default: ``true``) Also expand the `dest` file name (using % patterns).
 -  ``follow_links`` :index:`: <pair: output - copy_files - options; follow_links>` [:ref:`boolean <boolean>`] (default: ``true``) Store the file pointed by symlinks, not the symlink.
 -  ``kicad_3d_url`` :index:`: <pair: output - copy_files - options; kicad_3d_url>` [:ref:`string <string>`] (default: ``'https://gitlab.com/kicad/libraries/kicad-packages3D/-/raw/master/'``) Base URL for the KiCad 3D models.
 -  ``kicad_3d_url_suffix`` :index:`: <pair: output - copy_files - options; kicad_3d_url_suffix>` [:ref:`string <string>`] (default: ``''``) Text added to the end of the download URL.
