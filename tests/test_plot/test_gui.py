@@ -251,6 +251,7 @@ def run_test(num, test_dir, project, recipe, keep_project=False, no_board_file=F
     recipe(ctx).save_events(cfg)
     logging.debug(f'Using `{cfg}` events')
     yaml_out = ctx.get_out_path('result.kibot.yaml')
+    old_lang = os.environ.get('LANG')
     try:
         os.environ['LANG'] = 'en'
         with Xvfb(width=1920, height=1080, colordepth=24):
@@ -264,6 +265,7 @@ def run_test(num, test_dir, project, recipe, keep_project=False, no_board_file=F
             f.write(yaml_txt)
         with open(yaml_out, 'w') as f:
             f.write(yaml_res)
+        os.environ['LANG'] = old_lang
     ctx.compare_txt(text=os.path.abspath(yaml_out), reference=os.path.abspath('tests/GUI/cfg_out/'+yaml_base))
     ctx.clean_up(keep_project=keep_project)
 
