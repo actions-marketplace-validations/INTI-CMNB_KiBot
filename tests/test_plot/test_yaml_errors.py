@@ -450,9 +450,12 @@ def test_error_bom_wrong_format(test_dir):
 
 
 @pytest.mark.indep
-def test_error_bom_column(test_dir):
+def test_error_bom_column(test_dir, monkeypatch):
     ctx = context.TestContext(test_dir, PRJ, 'error_bom_column')
-    ctx.run(EXIT_BAD_CONFIG, no_board_file=True, extra=['-e', os.path.join(ctx.get_board_dir(), 'bom'+context.KICAD_SCH_EXT)])
+    with monkeypatch.context() as m:
+        m.setenv("LANG", "")
+        ctx.run(EXIT_BAD_CONFIG, no_board_file=True, extra=['-e', os.path.join(ctx.get_board_dir(),
+                'bom'+context.KICAD_SCH_EXT)])
     assert ctx.search_err("Invalid column name .?Impossible.?")
     ctx.clean_up(keep_project=True)
 
