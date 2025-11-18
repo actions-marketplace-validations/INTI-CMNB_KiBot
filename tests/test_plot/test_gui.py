@@ -252,6 +252,7 @@ def run_test(num, test_dir, project, recipe, keep_project=False, no_board_file=F
     logging.debug(f'Using `{cfg}` events')
     yaml_out = ctx.get_out_path('result.kibot.yaml')
     try:
+        os.environ['LANG'] = 'en'
         with Xvfb(width=1920, height=1080, colordepth=24):
             with start_record(True, ctx.output_dir, base_name):
                 extra = ['--gui', '-I', cfg]
