@@ -55,6 +55,7 @@ Added
 -  Export_3D: ``center`` option to ``origin`` (#871)
 -  Compress/Copy Files: Now ``dest`` also expands %X patterns (can be
    disabled) (#873)
+-  Worksheet: Support for paths relative to the project (#879)
 
 Fixed
 ~~~~~

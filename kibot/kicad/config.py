@@ -665,7 +665,7 @@ class KiConf(object):
                             logger.debug("** Not patching the SCH worksheet because we don't have a SCH")
                             return pl
                 else:
-                    fname = fix_windows(KiConf.expand_env(pl))
+                    fname = fix_windows(KiConf.expand_env(pl, ref_dir=GS.pro_dir or (GS.pcb_dir if is_pcb else GS.sch_dir)))
                 if os.path.isfile(fname):
                     dest = os.path.join(dest_dir, key+'.kicad_wks')
                     logger.debug(f'Copying {fname} -> {dest}')

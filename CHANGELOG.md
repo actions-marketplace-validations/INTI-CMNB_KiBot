@@ -31,6 +31,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Export_3D: `center` option to `origin` (#871)
 - Compress/Copy Files: Now `dest` also expands %X patterns (can be disabled)
   (#873)
+- Worksheet: Support for paths relative to the project (#879)
 
 ### Fixed
 - User.N layer numbering. I.e. pcb_print issues with their numbering (#808)
