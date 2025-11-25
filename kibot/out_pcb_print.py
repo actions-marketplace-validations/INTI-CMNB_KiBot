@@ -56,7 +56,7 @@ from .kicad.v5_sch import SchError
 from .kicad.pcb import PCB
 from .misc import (PDF_PCB_PRINT, W_PDMASKFAIL, W_MISSTOOL, PCBDRAW_ERR, W_PCBDRAW, VIATYPE_THROUGH, VIATYPE_BLIND_BURIED,
                    VIATYPE_MICROVIA, FONT_HELP_TEXT, W_BUG16418, pretty_list, try_int, W_NOPAGES, W_NOLAYERS, W_NOTHREPE,
-                   RENDERERS, read_png, EMBED_PREFIX, KICAD_VERSION_9_0_1)
+                   RENDERERS, read_png, EMBED_PREFIX, KICAD_VERSION_9_0_1, W_NOVISLA)
 from .create_pdf import create_pdf_from_pages
 from .macros import macros, document, output_class  # noqa: F401
 from .drill_marks import DRILL_MARKS_MAP, add_drill_marks
@@ -1442,14 +1442,19 @@ class PCB_PrintOptions(VariantOptions):
 
     def set_visible(self, edge_id):
         if not self.individual_page_scaling:
+            logger.debug("Global page scaling enabled")
             # Make all the layers in all the pages visible
             vis_layers = LSET()
             for p in self._pages:
                 for la in p._layers:
                     if la.use_for_center ^ self.invert_use_for_center:
                         vis_layers.addLayer(la._id)
+                        logger.debug("- {la.layer}")
             if self.force_edge_cuts and (self.forced_edge_cuts_use_for_center ^ self.invert_use_for_center):
                 vis_layers.addLayer(edge_id)
+                logger.debug("- Edge id {edge_id}")
+            if not len(vis_layers.Seq()):
+                logger.warning(W_NOVISLA+"No layer available for centering purposes")
             GS.board.SetVisibleLayers(vis_layers)
 
     def exclude_components_from_layer(self, layer):
