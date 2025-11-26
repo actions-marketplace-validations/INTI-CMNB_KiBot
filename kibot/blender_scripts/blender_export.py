@@ -65,7 +65,10 @@ def fbx_export(name):
 
 
 def obj_export(name):
-    bpy.ops.export_scene.obj(filepath=name)
+    try:
+        bpy.ops.wm.obj_export(filepath=name)
+    except AttributeError:
+        bpy.ops.export_scene.obj(filepath=name)
 
 
 def x3d_export(name):
@@ -73,11 +76,17 @@ def x3d_export(name):
 
 
 def stl_export(name):
-    bpy.ops.export_mesh.stl(filepath=name)
+    try:
+        bpy.ops.wm.stl_export(filepath=name)
+    except AttributeError:
+        bpy.ops.export_mesh.stl(filepath=name)
 
 
 def ply_export(name):
-    bpy.ops.export_mesh.ply(filepath=name)
+    try:
+        bpy.ops.wm.ply_export(filepath=name)
+    except AttributeError:
+        bpy.ops.export_mesh.ply(filepath=name)
 
 
 def blender_export(name):
@@ -85,8 +94,9 @@ def blender_export(name):
 
 
 def gltf_export(name):
+    # export_colors=False,
     bpy.ops.export_scene.gltf(filepath=name, export_copyright="KiBot", export_draco_mesh_compression_enable=True,
-                              export_draco_mesh_compression_level=6, export_colors=False, export_yup=True)
+                              export_draco_mesh_compression_level=6, export_yup=True)
 
 
 def render_export(render_path):
