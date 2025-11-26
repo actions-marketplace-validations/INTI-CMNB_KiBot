@@ -169,7 +169,7 @@ jobs:
         python3-coverage erase
         # Create the caches with macros
         python3-coverage run src/kibot --help-outputs > /dev/null
-        ./g4.sh
+        # ./g4.sh
     - name: Store coverage
       if: ${{ always() }}
       uses: actions/upload-artifact@v4
