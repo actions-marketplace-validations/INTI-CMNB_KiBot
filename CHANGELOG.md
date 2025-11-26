@@ -5,7 +5,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
-## [1.8.5] - UNRELEASED
+## [1.8.5] - 2025-11-26
 ### Added
 - CLI:
   - -F, --fail-on-ignored: to return error even when using -D (#828)
@@ -32,6 +32,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Compress/Copy Files: Now `dest` also expands %X patterns (can be disabled)
   (#873)
 - Worksheet: Support for paths relative to the project (#879)
+- Blender Export: Support for STL/OBJ/PLY/GLTF changes in Blender 4.2 (#880)
 
 ### Fixed
 - User.N layer numbering. I.e. pcb_print issues with their numbering (#808)

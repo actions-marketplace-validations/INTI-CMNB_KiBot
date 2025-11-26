@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-VERSION = "1.8.4"
+VERSION = "1.8.5"
 DRY = False
 
 from datetime import datetime

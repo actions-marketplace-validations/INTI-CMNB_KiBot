@@ -1,8 +1,41 @@
-kibot (1.8.5-1) UNRELEASED; urgency=medium
+kibot (1.8.5-1) stable; urgency=medium
 
-  * Next release
+  * Added support for 9.0.6
+  * Added -F, --fail-on-ignored option to return error even when using -D
+  * Added support for schematic private fields
+  * New global options:
+    - `update_pcb_text_cache`: Used to copy the text variables from the project
+      to the PCB file
+    - `disable_kicad_cross_on_fab`: To avoid KiCad 9 crosses on Fab layer, so
+      only KiBot controls it
+  * New PCB2Blender_2_17 internal template to generate a pcb2blender 2.17 file
+    to import on Blender
+  * New `check_field` pre-flight option to exclude components from a check
+  * Now you can specify a contour in an arbitrary layer for a sub-board.
+  * Added experimental v2.17 file generation to PCB2Blender_Tools
+  * Added separated N/PTH slot sizes to reports
+  * Added workaround for KiCad 9 randomly failing to copy 3D models for VRML
+  * Added support for big SVGs to Navigate Results, PCB Print and PcbDraw
+  * Added workaround for KiCad 9.0.5 change in how holes are plotted when
+    a layer is not included (black instead of white) to PCB Print
+  * Added `center` option to `origin` in Export_3D
+  * Added `dest` also expands %X patterns (can be disabled) for Compress/
+    Copy Files
+  * Added support for paths relative to the project on worksheets.
+  * Added support for STL/OBJ/PLY/GLTF changes in Blender 4.2
+  * Fixed User.N layer numbering. I.e. pcb_print issues with their numbering
+  * Fixed `kicost_config` not working
+  * Fixed huge memory usage for panels
+  * Fixed vjustify wrong choices (were the same as hjustify) for panelize.
+  * Fixed problems when using the STEP version of the model for THT Resistors
+  * Fixed in Fancy stackup:
+    - Limit the decimals of the copper weight to 2
+    - Buried vias issues on KiCad 9
+  * Added Workaround for KiCad 9.0.5 broken API to GetTextBox for Draw stackup,
+    Print drill table, Include table:
+  * Changed: Filtered KiBot warnings are informed in the debug output.
 
- -- Salvador Eduardo Tropea <salvador@inti.gob.ar>  Thu, 24 Apr 2025 07:35:31 -0300
+ -- Salvador Eduardo Tropea <salvador@inti.gob.ar>  Wed, 26 Nov 2025 11:09:38 -0300
 
 kibot (1.8.4-1) stable; urgency=medium
 
