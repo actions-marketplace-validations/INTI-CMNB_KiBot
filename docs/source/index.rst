@@ -14,10 +14,10 @@ KiBot (formerly KiPlot)
 - If you are looking for the GitHub Actions documentation, and you already know how
   to use KiBot, or want a quick start, read: :ref:`usage-of-github-actions`
 
-**New on v1.8.4**
+**New on v1.8.5**
 
-- Support for KiCad 9.0.1
-- Better support for embedded files (3D models, worksheets, etc.)
+- Support for KiCad 9.0.6
+- Various issues fixed
 
 .. toctree::
    :maxdepth: 3
