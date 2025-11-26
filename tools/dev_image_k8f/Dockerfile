@@ -1,5 +1,5 @@
 FROM ghcr.io/inti-cmnb/kicad_auto_test:ki8
-MAINTAINER Salvador E. Tropea <stropea@inti.gob.ar>
+LABEL MAINTAINER="Salvador E. Tropea <stropea@inti.gob.ar>"
 LABEL Description="KiCad 8 with KiBot and other automation scripts"
 
 RUN     dpkg --remove kibot && \
