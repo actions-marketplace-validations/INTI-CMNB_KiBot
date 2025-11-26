@@ -10,6 +10,8 @@ FieldCheck parameters
    is applied if the component contains extra fields.
 -  **regex** :index:`: <pair: preflight - check_fields - check_fields; regex>` [:ref:`string <string>`] (default: ``''``) Regular expression to match the field content. Note that technically we do a search, not a match.
 -  *regexp* :index:`: <pair: preflight - check_fields - check_fields; regexp>` Alias for regex.
+-  ``exclude_filter`` :index:`: <pair: preflight - check_fields - check_fields; exclude_filter>` [:ref:`string <string>` | :ref:`list(string) <list(string)>`] (default: ``'_null'``) Name of the filter to exclude components from processing.
+
 -  ``numeric_condition`` :index:`: <pair: preflight - check_fields - check_fields; numeric_condition>` [:ref:`string <string>`] (default: ``'none'``) (choices: ">", ">=", "<", "<=", "=", "none") Convert the group 1 of the regular expression to a number and apply this operation
    to the *numeric_reference* value.
 -  ``numeric_reference`` :index:`: <pair: preflight - check_fields - check_fields; numeric_reference>` [:ref:`number <number>`] (default: ``0``) Value to compare using *numeric_condition*.

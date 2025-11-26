@@ -157,6 +157,13 @@
             "DataTypeNumber"
           ],
           null
+        ],
+        [
+          "exclude_filter",
+          [
+            "DataTypeListStringSingular"
+          ],
+          null
         ]
       ]
     ]

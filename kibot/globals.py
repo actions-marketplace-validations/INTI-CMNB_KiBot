@@ -200,10 +200,12 @@ class Globals(FiltersOptions):
             """ Layer on which to add DNP cross for the top components """
             self.dnp_cross_bottom_layer = 'B.Fab'
             """ Layer on which to add DNP cross for the bottom components """
+            self.disable_kicad_cross_on_fab = True
+            """ Disable KiCad cross on Fab layers, so only KiBot does it (KiCad 9+) """
             self.cross_no_body = False
-            """ Cross components even when they don't have a body. Only for KiCad 6 and internal cross """
+            """ Cross components even when they don't have a body. Only for KiCad 6 and internal cross (Schematic) """
             self.cross_using_kicad = True
-            """ When using KiCad 7+ let KiCad cross the components """
+            """ When using KiCad 7+ let KiCad cross the components (Schematic) """
             self.csv_accept_no_ref = False
             """ Accept aggregating CSV files without references (Experimental) """
             self.date_format = '%Y-%m-%d'
@@ -267,7 +269,9 @@ class Globals(FiltersOptions):
             self.restore_project = False
             """ Restore the KiCad project after execution.
                 Note that this option will undo operations like `set_text_variables`.
-                Starting with 1.6.4 it also restores the PRL (Project Local Settings) and DRU (Design RUles) files """
+                Starting with 1.6.4 it also restores the PRL (Project Local Settings) and DRU (Design RUles) files.
+                Also note that this doesn't apply to the PCB file. Options like `invalidate_pcb_text_cache` and
+                `update_pcb_text_cache` can change the PCB file """
             self.set_text_variables_before_output = False
             """ Run the `set_text_variables` preflight before running each output that involves variants.
                 This can be used when a text variable uses the variant and you want to create more than
@@ -351,6 +355,10 @@ class Globals(FiltersOptions):
             self.cache_3d_resistors = False
             """ Use a cache for the generated 3D models of colored resistors.
                 Will save time, but you could need to remove the cache if you need to regenerate them """
+            self.vrml_3d_model_workaround = True
+            """ KiCad 9 randomly skips some 3D models when creating VRML files.
+                So we scan the VRML and look for missing components and copy them.
+                Related to https://gitlab.com/kicad/code/kicad/-/issues/20877 """
             self.resources_dir = 'kibot_resources'
             """ Directory where various resources are stored. Currently we support colors and fonts.
                 They must be stored in sub-dirs. I.e. kibot_resources/fonts/MyFont.ttf
@@ -388,11 +396,20 @@ class Globals(FiltersOptions):
             """ [string|list(string)] Name/s of the field/s used for the current raiting.
                 You can use `_field_current` as field name to use it in most places """
             self.invalidate_pcb_text_cache = 'auto'
-            """ [auto,yes,no] Remove any cached text variable in the PCB. This is needed in order to force a text
-                variables update when using `set_text_variables`. You might want to disable it when applying some
-                changes to the PCB and create a new copy to send to somebody without changing the cached values.
-                Note that it will save the PCB with the cache erased.
-                The `auto` value will remove the cached values only when using `set_text_variables` """
+            """ [auto,yes,no] Clear the text variables cache in the PCB file. This is needed in order to force KiCad to read
+                updated text variables from the project file when they are changed with `set_text_variables`. You might want to
+                disable it when applying some changes to the PCB and create a new copy to send to somebody without changing the
+                cached values.
+                The `auto` value will remove the cached values only when using `set_text_variables`.
+                Note that at least one of the `invalidate_pcb_text_cache` and `update_pcb_text_cache` config values must be set
+                to 'no', otherwise an error is produced."""
+            self.update_pcb_text_cache = 'no'
+            """ [auto,yes,no] Update the text variables cache in the PCB file. This makes the PCB file self-contained (usable
+                without the project file next to it) by copying all text variables from the project file (possibly modified by
+                the `set_text_variables` preflight) into the PCB file (the cache is completely replaced).
+                The `auto` value will update the cache only when using `set_text_variables`.
+                Note that at least one of the `invalidate_pcb_text_cache` and `update_pcb_text_cache` config values must be set
+                to 'no', otherwise an error is produced."""
             self.git_diff_strategy = 'worktree'
             """ [worktree,stash] When computing a PCB/SCH diff it configures how do we preserve the current
                 working state. The *worktree* mechanism creates a separated worktree, that then is just removed.
@@ -577,6 +594,9 @@ class Globals(FiltersOptions):
                 KiConf.aliases_3D[alias.name] = alias.value
                 logger.debugl(1, '- {}={}'.format(alias.name, alias.value))
             logger.debugl(1, 'Finished adding aliases')
+        if GS.global_invalidate_pcb_text_cache != 'no' and GS.global_update_pcb_text_cache != 'no':
+            raise KiPlotConfigurationError("At least one of `invalidate_pcb_text_cache` and `update_pcb_text_cache`"
+                                           " option must be `no`")
 
 
 logger = get_logger(__name__)

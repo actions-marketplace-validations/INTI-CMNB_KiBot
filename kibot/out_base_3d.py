@@ -14,7 +14,7 @@ from .bom.units import comp_match
 from .EasyEDA.easyeda_3d import download_easyeda_3d_model
 from .fil_base import reset_filters
 from .misc import (W_MISS3D, W_FAILDL, W_DOWN3D, DISABLE_3D_MODEL_TEXT, W_BADTOL, W_BADRES, W_RESVALISSUE, W_RES3DNAME,
-                   EMBED_PREFIX)
+                   W_MISSWRL, EMBED_PREFIX, get_file_hash)
 from .gs import GS
 from .optionable import Optionable
 from .out_base import VariantOptions, BaseOutput
@@ -177,7 +177,7 @@ class Base3DOptions(VariantOptions):
         os.makedirs(os.path.dirname(dest), exist_ok=True)
         # Is already there?
         if os.path.isfile(dest):
-            logger.debug('Using cached model `{}`'.format(dest))
+            logger.debug(f'Using cached model `{dest}` ({os.path.getsize(dest)})')
             return dest
         logger.debug('Downloading `{}`'.format(url))
         failed = False
@@ -190,6 +190,7 @@ class Base3DOptions(VariantOptions):
             return None
         with open(dest, 'wb') as f:
             f.write(r.content)
+        logger.debug(f'- Downloaded {dest} ({os.path.getsize(dest)})')
         return dest
 
     def wrl_name(self, name, force_wrl):
@@ -370,10 +371,21 @@ class Base3DOptions(VariantOptions):
     def do_colored_tht_resistor(self, name, c, changed):
         if not GS.global_colored_tht_resistors or not self.is_tht_resistor(name) or c is None:
             return name
+
+        base, ext = os.path.splitext(name)
+        if ext.lower() != '.wrl':
+            wrl_version = base + '.wrl'
+            if os.path.isfile(wrl_version):
+                logger.debug(f'Using WRL version for {c.ref} for generating resistor colors')
+                name = wrl_version
+            else:
+                logger.warning(W_MISSWRL+f'Missing WRL 3D model for resistor colors: `{name}`')
+                return name
+
         # Find the length of the resistor (is in the name of the 3D model)
         m = re.search(r"L([\d\.]+)mm", name)
         if not m:
-            logger.warning(W_RES3DNAME+'3D model for resistor without length: {}'.format(name))
+            logger.warning(W_RES3DNAME+f'3D model for resistor without length: {name}')
             return name
         r_len = float(m.group(1))
         # THT Resistor that we want to add colors
@@ -383,7 +395,7 @@ class Base3DOptions(VariantOptions):
             return name
         val = res.get_decimal()
         if val < Decimal('0.01'):
-            logger.warning(W_BADRES+'Resistor {} out of range, minimum value is 10 mOhms'.format(c.ref))
+            logger.warning(W_BADRES+f'Resistor {c.ref} out of range, minimum value is 10 mOhms')
             return name
         val_str = "{0:.0f}".format(val*100)
         # Check the tolerance (from the schematic fields)
@@ -393,7 +405,7 @@ class Base3DOptions(VariantOptions):
             tol = res.get_extra('tolerance')
             if not tol:
                 tol = GS.global_default_resistor_tolerance
-                logger.warning(W_BADTOL+'Missing tolerance for {}, using {}%'.format(c.ref, tol))
+                logger.warning(W_BADTOL+f'Missing tolerance for {c.ref}, using {tol}%')
         else:
             tol = tol.strip()
             if tol[-1] == '%':
@@ -401,10 +413,10 @@ class Base3DOptions(VariantOptions):
             try:
                 tol = float(tol)
             except ValueError:
-                logger.warning(W_BADTOL+'Malformed tolerance for {}: `{}`'.format(c.ref, tol))
+                logger.warning(W_BADTOL+f'Malformed tolerance for {c.ref}: `{tol}`')
                 return name
         if tol not in TOL_COLORS:
-            logger.warning(W_BADTOL+'Unknown tolerance for {}: `{}`'.format(c.ref, tol))
+            logger.warning(W_BADTOL+f'Unknown tolerance for {c.ref}: `{tol}`')
             return name
         tol_color = TOL_COLORS[tol]
         # Find how many bars we'll use
@@ -427,7 +439,7 @@ class Base3DOptions(VariantOptions):
         # Max is all 99 with 9 as multiplier
         max_val = pow(10, dig_bars)-1
         if val > max_val*1e9:
-            logger.warning(W_BADRES+'Resistor {} out of range, maximum value is {} GOhms'.format(c.ref, max_val))
+            logger.warning(W_BADRES+f'Resistor {c.ref} out of range, maximum value is {max_val} GOhms')
             return name
         # Fill the digits
         for bar in range(dig_bars):
@@ -435,7 +447,7 @@ class Base3DOptions(VariantOptions):
         # Make sure we don't have digits that can't be represented
         rest = val_str[dig_bars:]
         if rest and not all((x == '0' for x in rest)):
-            logger.warning(W_RESVALISSUE+'Digits not represented in {} {} ({} %)'.format(c.ref, c.value, tol))
+            logger.warning(W_RESVALISSUE+f'Digits not represented in {c.ref} {c.value} ({tol} %)')
         bars[nbars-1] = tol_color
         # For 20% remove the last bar
         if tol_color == 12:
@@ -451,7 +463,7 @@ class Base3DOptions(VariantOptions):
             self.create_colored_tht_resistor(name, cache_name, bars, r_len)
         changed[0] = True
         # Show the result
-        logger.debug('- {} {} {}% {} ({})'.format(c.ref, c.value, tol, bars, status))
+        logger.debug(f' - {c.ref} {c.value} {tol}% {bars} ({status})')
         return cache_name
 
     def replace_model(self, replace, m3d, force_wrl, is_copy_mode, rename_function, rename_data):
@@ -460,6 +472,14 @@ class Base3DOptions(VariantOptions):
         old_name = m3d.m_Filename
         new_name = self.wrl_name(replace, force_wrl) if not is_copy_mode else rename_function(rename_data, replace)
         self._undo_3d_models[new_name] = old_name
+        if GS.debug_level > 2:
+            try:
+                fsize = os.path.getsize(new_name)
+                fhash = get_file_hash(new_name)
+            except FileNotFoundError:
+                fsize = 'not found'
+                fhash = 'unknown'
+            logger.debug(f' - Replacing 3D model `{m3d.m_Filename}` by `{new_name}` ({fsize} - {fhash})')
         m3d.m_Filename = new_name
         self.models_replaced = True
 
@@ -492,6 +512,7 @@ class Base3DOptions(VariantOptions):
                 self._tmp_dir = os.path.abspath(self._tmp_dir)
             logger.debug('Using `{}` as dir for downloaded 3D models'.format(self._tmp_dir))
         rel_dirs.append(self._tmp_dir)
+        self.used_3d_models = {}
         # Look for all the footprints
         for m in GS.get_modules():
             ref = m.GetReference()
@@ -515,9 +536,12 @@ class Base3DOptions(VariantOptions):
                     continue
                 used_extra = [False]
                 full_name, is_embedded = do_expand_env(m3d.m_Filename, used_extra, extra_debug, lib_nickname)
-                if not is_embedded and not os.path.isfile(full_name):
-                    logger.debugl(2, 'Missing 3D model file {} ({})'.format(full_name, m3d.m_Filename))
+                if is_embedded:
+                    # Inside the PCB file, must be there
+                    continue
+                if not os.path.isfile(full_name):
                     # Missing 3D model
+                    logger.debugl(2, 'Missing 3D model file {} ({})'.format(full_name, m3d.m_Filename))
                     if self.download:
                         replace = self.try_download_kicad(m3d.m_Filename, full_name, downloaded, rel_dirs, force_wrl)
                         if replace is None and self.download_lcsc:
@@ -527,8 +551,11 @@ class Base3DOptions(VariantOptions):
                             self.replace_model(replace, m3d, force_wrl, is_copy_mode, rename_function, rename_data)
                     if full_name not in downloaded:
                         logger.warning(W_MISS3D+'Missing 3D model for {}: `{}`'.format(ref, full_name))
-                elif not is_embedded:  # File was found
+                    else:
+                        self.used_3d_models[os.path.basename(replace)] = replace
+                else:  # File was found
                     replace = self.do_colored_tht_resistor(full_name, sch_comp, used_extra)
+                    self.used_3d_models[os.path.basename(replace)] = replace
                     if used_extra[0] or is_copy_mode:
                         # The file is there, but we got it expanding a user defined text
                         # This is completely valid for KiCad, but kicad2step doesn't support it

@@ -22,6 +22,7 @@ PROFILE_PLOT = False
 if PROFILE_PLOT:
     import cProfile
 import os
+from subprocess import CalledProcessError
 # Here we import the whole module to make monkeypatch work
 from .error import KiPlotConfigurationError
 from .kiplot import load_sch, get_board_comps_data, run_command
@@ -46,7 +47,13 @@ def pcbdraw_warnings(tag, msg):
 
 
 def _run_command(cmd):
-    run_command(cmd, err_lvl=PCBDRAW_ERR)
+    try:
+        run_command(cmd, err_lvl=PCBDRAW_ERR, just_raise=True)
+    except CalledProcessError as e:
+        output = e.stdout or e.stderr
+        if '--unlimited' in output.decode():
+            cmd.remove('--unlimited')
+            return run_command(cmd, err_lvl=PCBDRAW_ERR)
 
 
 class PcbDrawStyle(Optionable):
@@ -257,7 +264,7 @@ class PcbDrawOptions(VariantOptions):
                 self.bottom = bot
         super().config(parent)
         # V-CUTS layer
-        self._vcuts_layer = Layer.solve(self.vcuts_layer)[0]._id if self.vcuts else 41
+        self._vcuts_layer = Layer.solve(self.vcuts_layer or 'Cmts.User')[0]._id
         # Highlight
         self._highlight = self.solve_kf_filters(self.highlight)
         # Margin
@@ -486,7 +493,7 @@ class PcbDrawOptions(VariantOptions):
         if self.rsvg_command:
             logger.debug('Converting {} -> {}'.format(svg_save_output_name, save_output_name))
             cmd = [self.rsvg_command, '--dpi-x', str(self.dpi), '--dpi-y', str(self.dpi),
-                   '--output', save_output_name, '--format', 'png', svg_save_output_name]
+                   '--output', save_output_name, '--format', 'png', '--unlimited', svg_save_output_name]
             _run_command(cmd)
             os.remove(svg_save_output_name)
         # Do we need to convert the saved file? (JPG/BMP)

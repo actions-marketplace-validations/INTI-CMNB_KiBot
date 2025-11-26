@@ -13,8 +13,82 @@ Changelog <https://keepachangelog.com/en/1.0.0/>`__, and this project
 adheres to `Semantic
 Versioning <https://semver.org/spec/v2.0.0.html>`__.
 
+[1.8.5] - 2025-11-26
+--------------------
+
+Added
+~~~~~
+
+-  CLI:
+
+   -  -F, –fail-on-ignored: to return error even when using -D (#828)
+
+-  Schematic: Support for private fields (#812)
+-  Global options:
+
+   -  ``update_pcb_text_cache``: Used to copy the text variables from
+      the project to the PCB file (#860 #861)
+   -  ``disable_kicad_cross_on_fab``: To avoid KiCad 9 crosses on Fab
+      layer, so only KiBot controls it (#866)
+
+-  Internal templates:
+
+   -  PCB2Blender_2_17: generates a pcb2blender 2.17 file to import on
+      Blender
+
+-  Pre-flights:
+
+   -  ``check_field``: option to exclude components from a check (#848)
+
+-  Variants:
+
+   -  Sub-boards: now you can specify a contour in an arbitrary layer.
+      (See yaqwsx/KiKit#846)
+
+-  PCB2Blender_Tools: Experimental v2.17 file generation
+-  Report: separated N/PTH slot sizes (#824)
+-  VRML: workaround for KiCad 9 randomly failing to copy 3D models
+   (#804)
+-  Navigate Results, PCB Print, PcbDraw: Support for big SVGs (#851)
+-  PCB Print: Workaround for KiCad 9.0.5 change in how holes are plotted
+   when a layer is not included (black instead of white).
+-  Export_3D: ``center`` option to ``origin`` (#871)
+-  Compress/Copy Files: Now ``dest`` also expands %X patterns (can be
+   disabled) (#873)
+-  Worksheet: Support for paths relative to the project (#879)
+-  Blender Export: Support for STL/OBJ/PLY/GLTF changes in Blender 4.2
+   (#880)
+
+Fixed
+~~~~~
+
+-  User.N layer numbering. I.e. pcb_print issues with their numbering
+   (#808)
+-  KiCost: ``kicost_config`` not working (#815)
+-  Huge memory usage for panels (#842)
+-  Panelize: vjustify wrong choices (were the same as hjustify) (#846)
+-  THT Resistors: Problems when using the STEP version of the model
+   (#856)
+-  Fancy stackup:
+
+   -  Limit the decimals of the copper weight to 2 (#864)
+   -  Buried vias issues on KiCad 9 (#870)
+
+-  Draw stackup, Print drill table, Include table:
+
+   -  Workaround for KiCad 9.0.5 broken API to GetTextBox
+
+Changed
+~~~~~~~
+
+-  Filtered KiBot warnings are informed in the debug output (See #817)
+
+.. _section-1:
+
 [1.8.4] - 2025-04-03
 --------------------
+
+.. _added-1:
 
 Added
 ~~~~~
@@ -35,6 +109,8 @@ Added
    -  ``Footprint Full`` virtual field for the ``LIB:FOOTPRINT`` name
    -  ``kicad_dnp_applied`` option to overwrite the global option
 
+.. _fixed-1:
+
 Fixed
 ~~~~~
 
@@ -43,12 +119,12 @@ Fixed
 -  3D outputs: Embedded 3D models misinterpreted as KiCad 6 aliases (See
    #802)
 
-.. _section-1:
+.. _section-2:
 
 [1.8.3] - 2025-03-18
 --------------------
 
-.. _added-1:
+.. _added-2:
 
 Added
 ~~~~~
@@ -189,7 +265,7 @@ Added
 
    -  Default font for KiCad 9 (#691)
 
-.. _fixed-1:
+.. _fixed-2:
 
 Fixed
 ~~~~~
@@ -239,6 +315,8 @@ Fixed
    -  ``sketch_pads_on_fab_layers`` not inherited from parent when using
       layer names (See #777)
 
+.. _changed-1:
+
 Changed
 ~~~~~~~
 
@@ -255,12 +333,12 @@ Changed
       excluded from the 3D models and solder paste processing, but the
       docs says this is just for BoM (See #772)
 
-.. _section-2:
+.. _section-3:
 
 [1.8.2] - 2024-10-28
 --------------------
 
-.. _added-2:
+.. _added-3:
 
 Added
 ~~~~~
@@ -289,7 +367,7 @@ Added
    -  ``copy_vias_on_mask`` option to workaround KiCad’s bug 18991 (See
       #703 and #704)
 
-.. _fixed-2:
+.. _fixed-3:
 
 Fixed
 ~~~~~
@@ -316,7 +394,7 @@ Fixed
 -  Expansion of internal field names. KiCad expands “VALUE”, not
    “Value”, which is what you see in the GUI
 
-.. _changed-1:
+.. _changed-2:
 
 Changed
 ~~~~~~~
@@ -333,12 +411,12 @@ Changed
 
    -  Avoid leaking DIGIKEY_CLIENT_ID and DIGIKEY_CLIENT_SECRET in logs
 
-.. _section-3:
+.. _section-4:
 
 [1.8.1] - 2024-09-25
 --------------------
 
-.. _fixed-3:
+.. _fixed-4:
 
 Fixed
 ~~~~~
@@ -356,12 +434,12 @@ Fixed
 
 -  PCB print: errors when printing a fully empty layer
 
-.. _section-4:
+.. _section-5:
 
 [1.8.0] - 2024-09-17
 --------------------
 
-.. _added-3:
+.. _added-4:
 
 Added
 ~~~~~
@@ -419,7 +497,7 @@ Added
 
    -  Support for panels repeating the same component (See #656)
 
-.. _fixed-4:
+.. _fixed-5:
 
 Fixed:
 ~~~~~~
@@ -441,7 +519,7 @@ Fixed:
 
    -  Problems with filters that change fields for components that are
       only in the PCB. (#628)
-   -  Use of ’_none’ filter in lists of filters and \_kf()
+   -  Use of ’\_none’ filter in lists of filters and \_kf()
 
 -  Variants:
 
@@ -468,7 +546,7 @@ Fixed:
    fills, that could generate huge lines in the generated PCB, not
    supported by KiCad. (#660)
 
-.. _changed-2:
+.. _changed-3:
 
 Changed:
 ~~~~~~~~
@@ -505,12 +583,12 @@ Changed:
    -  Spec to Field: some simple defaults for the specs (voltage,
       current, power and tolerance)
 
-.. _section-5:
+.. _section-6:
 
 [1.7.0] - 2024-04-23
 --------------------
 
-.. _added-4:
+.. _added-5:
 
 Added
 ~~~~~
@@ -573,7 +651,7 @@ Added
    -  Added options to control Eco1/Eco2/Drawings individually on KiCad
       8 (#614)
 
-.. _fixed-5:
+.. _fixed-6:
 
 Fixed
 ~~~~~
@@ -599,7 +677,7 @@ Fixed
    -  Expansion of variables in fields could fail if the KiCad config
       wasn’t initialized
 
-.. _changed-3:
+.. _changed-4:
 
 Changed
 ~~~~~~~
@@ -610,12 +688,12 @@ Changed
 -  PcbDraw: Now handles panelized boards much faster. Previous code was
    really slow for panels and the time increased exponentially.
 
-.. _section-6:
+.. _section-7:
 
 [1.6.5] - 2024-03-31
 --------------------
 
-.. _added-5:
+.. _added-6:
 
 Added
 ~~~~~
@@ -629,7 +707,7 @@ Added
 -  Navigate results: A header and navigation bar (#582)
 -  BoM: support for SVG format in the logos (#383)
 
-.. _changed-4:
+.. _changed-5:
 
 Changed
 ~~~~~~~
@@ -640,10 +718,10 @@ Changed
 -  KiRi: continue even on corrupted schematics (#583)
 -  Variants: avoid W045 on nameless pads. Assuming they are on purpose
    and not real pads. (See #584)
--  BoardView: Skip footprints with no pads (not just REF**)
+-  BoardView: Skip footprints with no pads (not just REF*\*)
    (whitequark/kicad-boardview#14)
 
-.. _fixed-6:
+.. _fixed-7:
 
 Fixed
 ~~~~~
@@ -670,12 +748,12 @@ Fixed
    (#589)
 -  Panelize: not able to use external JSON configs (#592)
 
-.. _section-7:
+.. _section-8:
 
 [1.6.4] - 2024-02-02
 --------------------
 
-.. _added-6:
+.. _added-7:
 
 Added
 ~~~~~
@@ -826,7 +904,7 @@ Added
    -  Added a new mode where we can control the added/removed colors
       (#551)
 
-.. _changed-5:
+.. _changed-6:
 
 Changed
 ~~~~~~~
@@ -863,7 +941,7 @@ Changed
    -  When *check_zone_fills* is enabled now we do a refill for the
       boards
 
-.. _fixed-7:
+.. _fixed-8:
 
 Fixed
 ~~~~~
@@ -951,12 +1029,12 @@ Fixed
    -  Problems when creating a colored resistor, but we didn’t have a
       cache yet (i.e. no model downloaded) #553
 
-.. _section-8:
+.. _section-9:
 
 [1.6.3] - 2023-06-26
 --------------------
 
-.. _added-7:
+.. _added-8:
 
 Added
 ~~~~~
@@ -1051,7 +1129,7 @@ Added
    -  ``quote_all``: forces quotes to all values in the CSV output. (See
       #456)
 
-.. _changed-6:
+.. _changed-7:
 
 Changed
 ~~~~~~~
@@ -1081,7 +1159,7 @@ Changed
 -  JLCPCB_stencil: Is now just like JLCPCB. The only difference is the
    added layers.
 
-.. _fixed-8:
+.. _fixed-9:
 
 Fixed
 ~~~~~
@@ -1121,12 +1199,12 @@ Fixed
 
 -  KiCad user template directory autodetection for KiCad 7+
 
-.. _section-9:
+.. _section-10:
 
 [1.6.2] - 2023-04-24
 --------------------
 
-.. _added-8:
+.. _added-9:
 
 Added
 ~~~~~
@@ -1191,7 +1269,7 @@ Added
 
    -  Option to use the auxiliary origin as reference. (#420)
 
-.. _fixed-9:
+.. _fixed-10:
 
 Fixed
 ~~~~~
@@ -1231,7 +1309,7 @@ Fixed
 
    -  ref_y coordinate not used. (#419)
 
-.. _changed-7:
+.. _changed-8:
 
 Changed:
 ~~~~~~~~
@@ -1239,12 +1317,12 @@ Changed:
 -  Some R, L and C values that were rejected are accepted now. You just
    get a warning about what part of the value was discarded.
 
-.. _section-10:
+.. _section-11:
 
 [1.6.1] - 2023-03-16
 --------------------
 
-.. _added-9:
+.. _added-10:
 
 Added
 ~~~~~
@@ -1278,7 +1356,7 @@ Added
    -  ``cross_using_kicad`` global option to use KiCad to cross DNP
       components in the schematic. Enabled by default.
 
-.. _fixed-10:
+.. _fixed-11:
 
 Fixed
 ~~~~~
@@ -1288,12 +1366,12 @@ Fixed
    conditions were met.
 -  PCB Print: KiCad crashing on some complex filled zones (#396)
 
-.. _section-11:
+.. _section-12:
 
 [1.6.0] - 2023-02-06
 --------------------
 
-.. _added-10:
+.. _added-11:
 
 Added
 ~~~~~
@@ -1407,24 +1485,24 @@ Added
    ~/.cache/kibot/3d You can change the directory using KIBOT_3D_MODELS
 -  License is now AGPL v3, since we are incorporating AGPL code.
 
-.. _section-12:
+.. _section-13:
 
 [1.5.1] - 2022-12-16
 --------------------
 
-.. _fixed-11:
+.. _fixed-12:
 
 Fixed
 ~~~~~
 
 -  System level resources look-up
 
-.. _section-13:
+.. _section-14:
 
 [1.5.0] - 2022-12-16
 --------------------
 
-.. _added-11:
+.. _added-12:
 
 Added
 ~~~~~
@@ -1486,7 +1564,7 @@ Added
 
    -  Option to control the *SVG precision* (units scale)
 
-.. _changed-8:
+.. _changed-9:
 
 Changed
 ~~~~~~~
@@ -1499,7 +1577,7 @@ Changed
 
    -  loss tangent decimals, added one more.
 
-.. _fixed-12:
+.. _fixed-13:
 
 Fixed
 ~~~~~
@@ -1533,12 +1611,12 @@ Fixed
 -  Makefile: outputs marked as not run by default were listed in the
    ``all`` target.
 
-.. _section-14:
+.. _section-15:
 
 [1.4.0] - 2022-10-12
 --------------------
 
-.. _added-12:
+.. _added-13:
 
 Added
 ~~~~~
@@ -1609,7 +1687,7 @@ Added
 
 -  Position: option to set the resolution for floating values (#314)
 
-.. _fixed-13:
+.. _fixed-14:
 
 Fixed
 ~~~~~
@@ -1631,7 +1709,7 @@ Fixed
 -  Position: Components wrongly separated by side when the side column
    wasn’t the last column (#313)
 
-.. _changed-9:
+.. _changed-10:
 
 Changed
 ~~~~~~~
@@ -1651,12 +1729,12 @@ Changed
 -  When importing globals now options that are lists or dicts are
    merged, not just replaced. (#291)
 
-.. _section-15:
+.. _section-16:
 
 [1.3.0] - 2022-09-08
 --------------------
 
-.. _added-13:
+.. _added-14:
 
 Added
 ~~~~~
@@ -1699,7 +1777,7 @@ Added
 
 -  Installation checker: option to show the tool paths.
 
-.. _fixed-14:
+.. _fixed-15:
 
 Fixed
 ~~~~~
@@ -1734,7 +1812,7 @@ Fixed
    when VAR isn’t defined. The old code tried to make it an absolute
    path.
 
-.. _changed-10:
+.. _changed-11:
 
 Changed
 ~~~~~~~
@@ -1751,12 +1829,12 @@ Changed
 -  Fails to expand KiCad vars are reported once (not every time)
 -  No more warnings about missing 3D models when we can download them
 
-.. _section-16:
+.. _section-17:
 
 [1.2.0] - 2022-06-15
 --------------------
 
-.. _added-14:
+.. _added-15:
 
 Added
 ~~~~~
@@ -1783,7 +1861,7 @@ Added
 -  GitHub discussions are now enabled. Comment about your KiBot
    experience `here <https://github.com/INTI-CMNB/KiBot/discussions>`__
 
-.. _fixed-15:
+.. _fixed-16:
 
 Fixed
 ~~~~~
@@ -1797,7 +1875,7 @@ Fixed
    orientation.
 -  svg_pcb_print: page orientation for portrait.
 
-.. _changed-11:
+.. _changed-12:
 
 Changed
 ~~~~~~~
@@ -1810,12 +1888,12 @@ Changed
    -  ``navigate_results`` and ``compress`` outputs are created after
       others
 
-.. _section-17:
+.. _section-18:
 
 [1.1.0] - 2022-05-24
 --------------------
 
-.. _added-15:
+.. _added-16:
 
 Added
 ~~~~~
@@ -1831,7 +1909,7 @@ Added
    -  Pattern and text variables expansion in the title (#198)
    -  Customizable extra info after the title (#199)
 
-.. _fixed-16:
+.. _fixed-17:
 
 Fixed
 ~~~~~
@@ -1841,12 +1919,12 @@ Fixed
 -  KiCost+Internal variants: problem with ``variant`` field
    capitalization
 
-.. _section-18:
+.. _section-19:
 
 [1.0.0] - 2022-05-10
 --------------------
 
-.. _added-16:
+.. _added-17:
 
 Added
 ~~~~~
@@ -1957,7 +2035,7 @@ Added
 -  Support for ``--subst-models`` option for KiCad 6’s kicad2step.
    (#137)
 
-.. _changed-12:
+.. _changed-13:
 
 Changed
 ~~~~~~~
@@ -1979,7 +2057,7 @@ Changed
 -  The default output pattern now includes the ``output_id`` (%I)
 -  The ``source`` path for ``compress`` now has pattern expansion (#152)
 
-.. _fixed-17:
+.. _fixed-18:
 
 Fixed
 ~~~~~
@@ -2019,12 +2097,12 @@ Fixed
    (not imported from KiCad 5)
 -  Problems when using page layout files with relative paths. (#174)
 
-.. _section-19:
+.. _section-20:
 
 [0.11.0] - 2021-04-25
 ---------------------
 
-.. _added-17:
+.. _added-18:
 
 Added
 ~~~~~
@@ -2048,7 +2126,7 @@ Added
 -  Basic KiCost support (**experimental**).
 -  Basic internal BoM and KiCost integration (**experimental**).
 
-.. _changed-13:
+.. _changed-14:
 
 Changed
 ~~~~~~~
@@ -2061,7 +2139,7 @@ Changed
 -  Reference ranges of two elements no longer represented as ranges.
    Examples: “R1-R2” is now “R1 R2”, “R1-R3” remains unchanged.
 
-.. _fixed-18:
+.. _fixed-19:
 
 Fixed
 ~~~~~
@@ -2075,12 +2153,12 @@ Fixed
 -  The “References” (plural) column is now coloured as “Reference”
    (singular)
 
-.. _section-20:
+.. _section-21:
 
 [0.10.1] - 2021-02-22
 ---------------------
 
-.. _added-18:
+.. _added-19:
 
 Added
 ~~~~~
@@ -2088,21 +2166,9 @@ Added
 -  GitLab CI workaround
 -  Verbosity level is now passed to KiAuto
 
-.. _section-21:
-
-[0.10.0-4] - 2021-02-16
------------------------
-
-.. _fixed-19:
-
-Fixed
-~~~~~
-
--  Problem using Python 3.6 (ZipFile’s compresslevel arg needs 3.7)
-
 .. _section-22:
 
-[0.10.0-3] - 2021-02-16
+[0.10.0-4] - 2021-02-16
 -----------------------
 
 .. _fixed-20:
@@ -2110,11 +2176,11 @@ Fixed
 Fixed
 ~~~~~
 
--  Problem using Python 3.6 (StreamHandler.setStream introduced in 3.7)
+-  Problem using Python 3.6 (ZipFile’s compresslevel arg needs 3.7)
 
 .. _section-23:
 
-[0.10.0-2] - 2021-02-12
+[0.10.0-3] - 2021-02-16
 -----------------------
 
 .. _fixed-21:
@@ -2122,14 +2188,26 @@ Fixed
 Fixed
 ~~~~~
 
--  Missing python3-distutils dependency on Debian package.
+-  Problem using Python 3.6 (StreamHandler.setStream introduced in 3.7)
 
 .. _section-24:
+
+[0.10.0-2] - 2021-02-12
+-----------------------
+
+.. _fixed-22:
+
+Fixed
+~~~~~
+
+-  Missing python3-distutils dependency on Debian package.
+
+.. _section-25:
 
 [0.10.0] - 2021-02-12
 ---------------------
 
-.. _added-19:
+.. _added-20:
 
 Added
 ~~~~~
@@ -2160,7 +2238,7 @@ Added
 -  KiAuto time-out control.
 -  Now you can import outputs from another config file.
 
-.. _changed-14:
+.. _changed-15:
 
 Changed
 ~~~~~~~
@@ -2175,7 +2253,7 @@ Changed
    and error messages still use stderr.
 -  Now InteractiveHtmlBom can be installed just as a plugin.
 
-.. _fixed-22:
+.. _fixed-23:
 
 Fixed
 ~~~~~
@@ -2187,12 +2265,12 @@ Fixed
    (i.e. UTF-8).
 -  Problems when using components with more than 10 subparts.
 
-.. _section-25:
+.. _section-26:
 
 [0.9.0] - 2021-01-04
 --------------------
 
-.. _added-20:
+.. _added-21:
 
 Added
 ~~~~~
@@ -2207,7 +2285,7 @@ Added
 -  A filter to rotate footprints in the position file (#28).
 -  The step output now can download missing 3D models.
 
-.. _changed-15:
+.. _changed-16:
 
 Changed
 ~~~~~~~
@@ -2216,7 +2294,7 @@ Changed
 -  Position files in CSV format quotes only the columns that could
    contain an space. Just like KiCad does.
 
-.. _fixed-23:
+.. _fixed-24:
 
 Fixed
 ~~~~~
@@ -2225,12 +2303,12 @@ Fixed
 -  Generic filter ``include_only`` option worked only when debug
    enabled.
 
-.. _section-26:
+.. _section-27:
 
 [0.8.1] - 2020-12-09
 --------------------
 
-.. _added-21:
+.. _added-22:
 
 Added
 ~~~~~
@@ -2238,7 +2316,7 @@ Added
 -  Internal BoM HTML: highlight cell when hover.
 -  Internal BoM HTML: allow to jump to REF of row number using anchors.
 
-.. _fixed-24:
+.. _fixed-25:
 
 Fixed
 ~~~~~
@@ -2246,12 +2324,12 @@ Fixed
 -  Internal BoM separator wasn’t applied when using ``use_alt``
 -  Problems loading plug-ins when using ``pip``.
 
-.. _section-27:
+.. _section-28:
 
 [0.8.0] - 2020-11-06
 --------------------
 
-.. _added-22:
+.. _added-23:
 
 Added
 ~~~~~
@@ -2264,7 +2342,7 @@ Added
 -  Columns in position files can be selected, renamed and sorted as you
    like.
 
-.. _fixed-25:
+.. _fixed-26:
 
 Fixed
 ~~~~~
@@ -2277,12 +2355,12 @@ Fixed
 -  Excellon drill output when using unified output and not using default
    KiCad names.
 
-.. _section-28:
+.. _section-29:
 
 [0.7.0] - 2020-09-11
 --------------------
 
-.. _added-23:
+.. _added-24:
 
 Added
 ~~~~~
@@ -2307,7 +2385,7 @@ Added
 -  Default output file name format and default variant can be specified
    from the command line.
 
-.. _fixed-26:
+.. _fixed-27:
 
 Fixed
 ~~~~~
@@ -2315,12 +2393,12 @@ Fixed
 -  Virtual components are always excluded from position files. Note you
    can change it using the variants mechanism.
 
-.. _section-29:
+.. _section-30:
 
 [0.6.2] - 2020-08-25
 --------------------
 
-.. _changed-16:
+.. _changed-17:
 
 Changed
 ~~~~~~~
@@ -2329,7 +2407,7 @@ Changed
    creating the internal BoM. They are usually mistakes that prevents
    grouping components.
 
-.. _fixed-27:
+.. _fixed-28:
 
 Fixed
 ~~~~~
@@ -2341,26 +2419,26 @@ Fixed
 -  Problems with PcbDraw when generating PNG and JPG outputs. Now we use
    a more reliable conversion method when available.
 
-.. _section-30:
+.. _section-31:
 
 [0.6.1] - 2020-08-20
 --------------------
 
-.. _added-24:
+.. _added-25:
 
 Added
 ~~~~~
 
 -  More robust behavior on GUI dependent commands.
 
-.. _changed-17:
+.. _changed-18:
 
 Changed
 ~~~~~~~
 
 -  Incorporated mcpy, no longer a dependency.
 
-.. _fixed-28:
+.. _fixed-29:
 
 Fixed
 ~~~~~
@@ -2368,12 +2446,12 @@ Fixed
 -  Problems when using ``pip install`` without –no-compile. At least for
    user level install.
 
-.. _section-31:
+.. _section-32:
 
 [0.6.0] - 2020-08-18
 --------------------
 
-.. _added-25:
+.. _added-26:
 
 Added
 ~~~~~
@@ -2405,7 +2483,7 @@ Added
    -  ``error_number`` -> ``number``
    -  ``regexp`` -> ``regex``
 
-.. _changed-18:
+.. _changed-19:
 
 Changed
 ~~~~~~~
@@ -2420,12 +2498,12 @@ Changed
    -  pdf_sch_print: adds -schematic
    -  IBoM: contains the project name.
 
-.. _section-32:
+.. _section-33:
 
 [0.5.0] - 2020-07-11
 --------------------
 
-.. _changed-19:
+.. _changed-20:
 
 Changed
 ~~~~~~~
@@ -2441,7 +2519,7 @@ Changed
 -  Now we test the PCB and/or SCH only when we are doing something that
    needs them.
 
-.. _added-26:
+.. _added-27:
 
 Added
 ~~~~~
@@ -2496,7 +2574,7 @@ Added
    -  variants_blacklist
    -  dnp_field
 
-.. _fixed-29:
+.. _fixed-30:
 
 Fixed
 ~~~~~
@@ -2505,22 +2583,9 @@ Fixed
 -  ‘ignore_unconnected’ preflight wasn’t working.
 -  The report of hwo many ERC/DRC errors we found.
 
-.. _section-33:
-
-[0.4.0] - 2020-06-17
---------------------
-
-.. _added-27:
-
-Added
-~~~~~
-
--  STEP 3D model generation
--  Support for unpatched InteractiveHtmlBom
-
 .. _section-34:
 
-[0.3.0] - 2020-06-14
+[0.4.0] - 2020-06-17
 --------------------
 
 .. _added-28:
@@ -2528,10 +2593,23 @@ Added
 Added
 ~~~~~
 
+-  STEP 3D model generation
+-  Support for unpatched InteractiveHtmlBom
+
+.. _section-35:
+
+[0.3.0] - 2020-06-14
+--------------------
+
+.. _added-29:
+
+Added
+~~~~~
+
 -  Better debug information when a BoM fails to be generated.
 -  Support for compressed YAML files.
 
-.. _changed-20:
+.. _changed-21:
 
 Changed
 ~~~~~~~
@@ -2540,57 +2618,16 @@ Changed
    missing or corrupted.
 -  The ‘check_zone_fills’ option is now independent of ‘run_drc’
 
-.. _fixed-30:
+.. _fixed-31:
 
 Fixed
 ~~~~~
 
 -  Error codes that overlapped.
 
-.. _section-35:
-
-[0.2.5] - 2020-06-11
---------------------
-
-.. _added-29:
-
-Added
-~~~~~
-
--  Tolerate config files without outputs
--  Mechanism to filter ERC/DRC errors
-
-.. _fixed-31:
-
-Fixed
-~~~~~
-
--  All pcbnew plot formats generated gerber job files
--  Most formats that needed layers didn’t complain when omitted
-
 .. _section-36:
 
-[0.2.4] - 2020-05-19
---------------------
-
-.. _changed-21:
-
-Changed
-~~~~~~~
-
--  Now kicad-automation-scripts 1.3.1 or newer is needed.
-
-.. _fixed-32:
-
-Fixed
-~~~~~
-
--  Problems for kibom and print_sch outputs when the PCB name included a
-   path.
-
-.. _section-37:
-
-[0.2.3] - 2020-04-23
+[0.2.5] - 2020-06-11
 --------------------
 
 .. _added-30:
@@ -2598,24 +2635,52 @@ Fixed
 Added
 ~~~~~
 
--  List available targets
+-  Tolerate config files without outputs
+-  Mechanism to filter ERC/DRC errors
 
-.. _section-38:
+.. _fixed-32:
 
-[0.2.2] - 2020-04-20
+Fixed
+~~~~~
+
+-  All pcbnew plot formats generated gerber job files
+-  Most formats that needed layers didn’t complain when omitted
+
+.. _section-37:
+
+[0.2.4] - 2020-05-19
 --------------------
+
+.. _changed-22:
+
+Changed
+~~~~~~~
+
+-  Now kicad-automation-scripts 1.3.1 or newer is needed.
 
 .. _fixed-33:
 
 Fixed
 ~~~~~
 
--  KiBoM temporal files, now removed
--  preflight tasks that didn’t honor –out-dir
+-  Problems for kibom and print_sch outputs when the PCB name included a
+   path.
+
+.. _section-38:
+
+[0.2.3] - 2020-04-23
+--------------------
+
+.. _added-31:
+
+Added
+~~~~~
+
+-  List available targets
 
 .. _section-39:
 
-[0.2.1] - 2020-04-18
+[0.2.2] - 2020-04-20
 --------------------
 
 .. _fixed-34:
@@ -2623,15 +2688,28 @@ Fixed
 Fixed
 ~~~~~
 
+-  KiBoM temporal files, now removed
+-  preflight tasks that didn’t honor –out-dir
+
+.. _section-40:
+
+[0.2.1] - 2020-04-18
+--------------------
+
+.. _fixed-35:
+
+Fixed
+~~~~~
+
 -  Problem when the excellon drill target directory didn’t exist (now
    created)
 
-.. _section-40:
+.. _section-41:
 
 [0.2.0] - 2020-03-28
 --------------------
 
-.. _added-31:
+.. _added-32:
 
 Added
 ~~~~~
@@ -2649,19 +2727,19 @@ Added
 -  Progress information
 -  –version option
 
-.. _fixed-35:
+.. _fixed-36:
 
 Fixed
 ~~~~~
 
 -  Debian dependencies
 
-.. _section-41:
+.. _section-42:
 
 [0.1.1] - 2020-03-13
 --------------------
 
-.. _added-32:
+.. _added-33:
 
 Added
 ~~~~~

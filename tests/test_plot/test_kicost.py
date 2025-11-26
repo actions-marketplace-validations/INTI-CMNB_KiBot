@@ -11,6 +11,20 @@ import logging
 import subprocess
 
 OUT_DIR = 'KiCost'
+xlsx2csv_version = None
+
+
+def do_int(v):
+    return int(v) if v is not None else 0
+
+
+def get_xlsx2csv_version():
+    global xlsx2csv_version
+    if xlsx2csv_version:
+        return xlsx2csv_version
+    res = subprocess.check_output(['xlsx2csv', '--version']).decode()
+    ver = tuple(map(do_int, res.split('.')))
+    return ver
 
 
 def convert2csv(ctx, xlsx, skip_empty=False, sheet=None):
@@ -22,6 +36,8 @@ def convert2csv(ctx, xlsx, skip_empty=False, sheet=None):
         cmd.append('--skipemptycolumns')
     if sheet:
         cmd.extend(['-n', sheet])
+    if get_xlsx2csv_version() >= (0, 8, 0):
+        cmd.append('--include-hidden-rows')
     cmd.append(xlsx)
     cmd.append(csv)
     subprocess.check_output(cmd)

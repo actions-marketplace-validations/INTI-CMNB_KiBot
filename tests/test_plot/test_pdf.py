@@ -48,6 +48,9 @@ def test_pdf_refill_2(test_dir):
 
 
 def test_pdf_variant_1(test_dir):
+    # Here we cross C2
+    # In the past KiCad crossed C1, but "disable_kicad_cross_on_fab" currently avoids it
+    # On KiCad 9.0.5 KiCad seems to always ignore po.SetCrossoutDNPFPsOnFabLayers(False) and never crosses it
     prj = 'kibom-variant_4'
     ctx = context.TestContext(test_dir, prj, 'pdf_variant_1')
     ctx.run()

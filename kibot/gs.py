@@ -20,7 +20,7 @@ from shutil import copy2
 from sys import exit, exc_info
 import tempfile
 from traceback import extract_stack, format_list, print_tb
-from .misc import EXIT_BAD_ARGS, W_DATEFORMAT, W_UNKVAR, WRONG_INSTALL, CORRUPTED_PRO, hide_stderr
+from .misc import EXIT_BAD_ARGS, W_DATEFORMAT, W_UNKVAR, WRONG_INSTALL, CORRUPTED_PRO, hide_stderr, KICAD_VERSION_9_0_5
 from .log import get_logger
 
 logger = get_logger(__name__)
@@ -130,6 +130,7 @@ class GS(object):
                             'in': 1000*IU_PER_MILS}
     ci_cd_detected = False
     stop_flag = False
+    errors_ignored = False    # We ignored at least one error
     # Maximum recursive replace
     MAXDEPTH = 20
     #
@@ -184,6 +185,7 @@ class GS(object):
     global_git_diff_strategy = None
     global_impedance_controlled = None
     global_invalidate_pcb_text_cache = None
+    global_update_pcb_text_cache = None
     global_kiauto_time_out_scale = None
     global_kiauto_wait_start = None
     global_layer_defaults = None
@@ -216,6 +218,7 @@ class GS(object):
     global_use_dir_for_preflights = None
     global_use_os_env_for_expand = None
     global_variant = None
+    global_vrml_3d_model_workaround = None
     # Only for v7+
     global_allow_blind_buried_vias = None
     global_allow_microvias = None
@@ -224,6 +227,8 @@ class GS(object):
     global_kicad_dnp_applies_to_3D = None
     global_cross_using_kicad = None
     global_work_layer = None
+    # Only for KiCad 9+
+    global_disable_kicad_cross_on_fab = None
     pasteable_cmd = shlex.join if hasattr(shlex, 'join') else lambda x: str(x)   # novermin
 
     @staticmethod
@@ -909,6 +914,7 @@ class GS(object):
                             logger.error(h[1])
         if level >= 0:
             exit(level)
+        GS.errors_ignored = True
 
     @staticmethod
     def get_shape(shape):
@@ -1113,14 +1119,18 @@ class GS(object):
 
     @staticmethod
     def copper_layer_to_ordinal(n):
-        ordinal = pcbnew.CopperLayerToOrdinal(n)
-        # Adjust to the current PCB
-        if ordinal == pcbnew.CopperLayerToOrdinal(pcbnew.B_Cu):
-            ordinal = GS.board.GetCopperLayerCount()-1
-        return ordinal
+        if GS.ki9:
+            ordinal = pcbnew.CopperLayerToOrdinal(n)
+            # Adjust to the current PCB
+            if ordinal == pcbnew.CopperLayerToOrdinal(pcbnew.B_Cu):
+                ordinal = GS.board.GetCopperLayerCount()-1
+            return ordinal
+        # <= 8
+        return GS.board.GetCopperLayerCount()-1 if n == pcbnew.B_Cu else n
 
     @staticmethod
     def ordinal_to_copper_layer(n):
+        # Only for KiCad 9+
         if n == GS.board.GetCopperLayerCount()-1:
             return pcbnew.B_Cu
         if n == 0:
@@ -1157,3 +1167,10 @@ class GS(object):
         if GS.on_windows:
             return os.path.expanduser(os.path.join('~', 'AppData', 'Local', 'KiCad', ki_ver, 'embed', fname))
         return os.path.expanduser(os.path.join('~', '.cache', 'kicad', ki_ver, 'embed', fname))
+
+    @staticmethod
+    def EDA_TEXT_GetTextBox(obj, a_line=-1):
+        if GS.kicad_version_n >= KICAD_VERSION_9_0_5:
+            # Wonderful! before the other, no default, etc.
+            return obj.GetTextBox(None, a_line)
+        return obj.GetTextBox(a_line)

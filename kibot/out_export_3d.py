@@ -33,9 +33,10 @@ class Export_3DOptions(Base3DOptions):
                 - BRep: Part of Open CASCADE Technology (OCCT) """
             #    - PLY: Polygon File Format or the Stanford Triangle Format.
             self.origin = 'grid'
-            """ *[grid,drill,*] Determines the coordinates origin. Using grid the coordinates are the same as you have in the
-                design sheet.
-                The drill option uses the auxiliary reference defined by the user.
+            """ *[grid,drill,center,*] Determines the coordinates origin.
+                Using `grid` the coordinates are the same as you have in the design sheet.
+                The `drill` option uses the auxiliary reference defined by the user.
+                Using `center` you'll get the center of the board as origin.
                 You can define any other origin using the format 'X,Y', i.e. '3.2,-10'. Don't put units here.
                 The units used here are the ones specified by the `units` option """
             self.units = 'millimeters'
@@ -82,13 +83,21 @@ class Export_3DOptions(Base3DOptions):
         # Validate and parse the origin
         val = self.origin
         if (val not in ['grid', 'drill']):
-            user_origin = re.match(r'([-\d\.]+)\s*,\s*([-\d\.]+)\s*$', val)
-            if user_origin is None:
-                raise KiPlotConfigurationError('Origin must be `grid` or `drill` or `X,Y` (no units here)')
-            self._user_x = float(user_origin.group(1))
-            self._user_y = float(user_origin.group(2))
+            if val == 'center':
+                bb = GS.board.ComputeBoundingBox(True)
+                center = bb.GetCenter()
+                self._user_x = GS.to_mm(center.x)
+                self._user_y = GS.to_mm(center.y)
+                self._units = 'mm'
+            else:
+                user_origin = re.match(r'([-\d\.]+)\s*,\s*([-\d\.]+)\s*$', val)
+                if user_origin is None:
+                    raise KiPlotConfigurationError('Origin must be `grid` or `drill` or `X,Y` (no units here)')
+                self._user_x = float(user_origin.group(1))
+                self._user_y = float(user_origin.group(2))
         # Adjust the units
-        self._units = UNITS_2_KICAD[self.units]
+        if self.origin != 'center':
+            self._units = UNITS_2_KICAD[self.units]
         if self._units == 'mils':
             self._units = 'in'
             self._scale = 0.001

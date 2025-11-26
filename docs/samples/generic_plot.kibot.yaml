@@ -874,6 +874,8 @@ outputs:
     options:
       # [string='auto'] [auto,stored,deflated,bzip2,lzma] Compression algorithm. Use auto to let KiBot select a suitable one
       compression: 'auto'
+      # [boolean=true] Also expand the `dest` file name (using % patterns)
+      expand_dest: true
       # [list(dict)=[]] Which files will be included
       files:
         # [string=''] Destination directory inside the archive, empty means the same of the file
@@ -933,6 +935,8 @@ outputs:
       # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the
       # variant
       exclude_filter: '_null'
+      # [boolean=true] Also expand the `dest` file name (using % patterns)
+      expand_dest: true
       # [list(dict)=[]] Which files will be included
       files:
         # [string=''] Destination directory inside the output dir, empty means the same of the file
@@ -1013,6 +1017,10 @@ outputs:
       # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the
       # variant
       dnf_filter: '_null'
+      # [number=150] [72,600] Resolution (Dots Per Inch) for the diff images.
+      # Be careful to flush any cached images if you change it.
+      # Also be careful with the values, images can become huge
+      dpi: 150
       # [string|list(string)='_null'] Name of the filter to exclude components from processing.
       # Is a short-cut to use for simple cases where a variant is an overkill.
       # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the
@@ -1123,7 +1131,7 @@ outputs:
       variant: ''
   # DXF (Drawing Exchange Format):
   # This output is what you get from the File/Plot menu in pcbnew.
-  # Important: If you use custom fonts and/or colors please consult the `resources_dir` global variable.
+  #         Important: If you use custom fonts and/or colors please consult the `resources_dir` global variable.
   - name: 'dxf_example'
     comment: 'Exports the PCB to 2D mechanical EDA tools (like AutoCAD).'
     type: 'dxf'
@@ -1211,7 +1219,7 @@ outputs:
   # DXF Schematic Print (Drawing Exchange Format):
   # This output is what you get from the 'File/Plot' menu in eeschema.
   # Supports the image replacement using the prefix indicated by the `sch_image_prefix` global variable
-  # Important: If you use custom fonts and/or colors please consult the `resources_dir` global variable.
+  #         Important: If you use custom fonts and/or colors please consult the `resources_dir` global variable.
   - name: 'dxf_sch_print_example'
     comment: 'Exports the schematic to a format commonly used for CAD software.'
     type: 'dxf_sch_print'
@@ -1417,9 +1425,10 @@ outputs:
       no_optimize_step: false
       # [boolean=false] Used to exclude 3D models for components with 'virtual' attribute
       no_virtual: false
-      # [string='grid'] [grid,drill,*] Determines the coordinates origin. Using grid the coordinates are the same as you have in the
-      # design sheet.
-      # The drill option uses the auxiliary reference defined by the user.
+      # [string='grid'] [grid,drill,center,*] Determines the coordinates origin.
+      # Using `grid` the coordinates are the same as you have in the design sheet.
+      # The `drill` option uses the auxiliary reference defined by the user.
+      # Using `center` you'll get the center of the board as origin.
       # You can define any other origin using the format 'X,Y', i.e. '3.2,-10'. Don't put units here.
       # The units used here are the ones specified by the `units` option
       origin: 'grid'
@@ -1540,7 +1549,7 @@ outputs:
       variant: ''
   # Gerber format:
   # This output is what you get from the File/Plot menu in pcbnew.
-  # Important: If you use custom fonts and/or colors please consult the `resources_dir` global variable.
+  #         Important: If you use custom fonts and/or colors please consult the `resources_dir` global variable.
   - name: 'gerber_example'
     comment: 'This is the main fabrication format for the PCB.'
     type: 'gerber'
@@ -1634,7 +1643,7 @@ outputs:
     layers: all
   # HPGL (Hewlett & Packard Graphics Language):
   # This output is what you get from the File/Plot menu in pcbnew.
-  # Important: If you use custom fonts and/or colors please consult the `resources_dir` global variable.
+  #         Important: If you use custom fonts and/or colors please consult the `resources_dir` global variable.
   - name: 'hpgl_example'
     comment: 'Exports the PCB for plotters and laser printers.'
     type: 'hpgl'
@@ -1723,7 +1732,7 @@ outputs:
   # HPGL Schematic Print (Hewlett & Packard Graphics Language):
   # This output is what you get from the 'File/Plot' menu in eeschema.
   # Supports the image replacement using the prefix indicated by the `sch_image_prefix` global variable
-  # Important: If you use custom fonts and/or colors please consult the `resources_dir` global variable.
+  #         Important: If you use custom fonts and/or colors please consult the `resources_dir` global variable.
   - name: 'hpgl_sch_print_example'
     comment: 'Exports the schematic to the most common plotter format.'
     type: 'hpgl_sch_print'
@@ -2135,7 +2144,6 @@ outputs:
   # access to local files. In the case of Google Chrome you can use the
   # `--allow-file-access-from-files` command line option.
   # For more information visit the [KiCanvas web](https://github.com/theacodes/kicanvas)
-  # 
   - name: 'kicanvas_example'
     comment: 'Generates an interactive web page to browse the schematic and/or PCB.'
     type: 'kicanvas'
@@ -2942,7 +2950,7 @@ outputs:
             thickness: 0.3
             # [string='none'] [none,simple] Currently fixed. BTW: don't ask me about this ridiculous default, is how KiKit works
             type: 'none'
-            # [string='center'] [left,right,center] Vertical justification of the text
+            # [string='center'] [top,bottom,center] Vertical justification of the text
             vjustify: 'center'
             # [number|string=0] Specify the vertical offset from anchor. Respects KiCAD coordinate system
             voffset: 0
@@ -2978,7 +2986,7 @@ outputs:
             thickness: 0.3
             # [string='none'] [none,simple] Currently fixed. BTW: don't ask me about this ridiculous default, is how KiKit works
             type: 'none'
-            # [string='center'] [left,right,center] Vertical justification of the text
+            # [string='center'] [top,bottom,center] Vertical justification of the text
             vjustify: 'center'
             # [number|string=0] Specify the vertical offset from anchor. Respects KiCAD coordinate system
             voffset: 0
@@ -3014,7 +3022,7 @@ outputs:
             thickness: 0.3
             # [string='none'] [none,simple] Currently fixed. BTW: don't ask me about this ridiculous default, is how KiKit works
             type: 'none'
-            # [string='center'] [left,right,center] Vertical justification of the text
+            # [string='center'] [top,bottom,center] Vertical justification of the text
             vjustify: 'center'
             # [number|string=0] Specify the vertical offset from anchor. Respects KiCAD coordinate system
             voffset: 0
@@ -3050,7 +3058,7 @@ outputs:
             thickness: 0.3
             # [string='none'] [none,simple] Currently fixed. BTW: don't ask me about this ridiculous default, is how KiKit works
             type: 'none'
-            # [string='center'] [left,right,center] Vertical justification of the text
+            # [string='center'] [top,bottom,center] Vertical justification of the text
             vjustify: 'center'
             # [number|string=0] Specify the vertical offset from anchor. Respects KiCAD coordinate system
             voffset: 0
@@ -3130,6 +3138,8 @@ outputs:
       board_bounds_dir: 'layers'
       # [string='bounds'] Name of the bounds file
       board_bounds_file: 'bounds'
+      # [string='BIN'] [BIN,TOML] Format for the board bounds file, also sub-boards. Use 'TOML' for 2.17+
+      board_bounds_format: 'BIN'
       # [string|list(string)='_null'] Name of the filter to mark components as not fitted.
       # Is a short-cut to use for simple cases where a variant is an overkill.
       # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the
@@ -3146,6 +3156,8 @@ outputs:
       pads_info_create: true
       # [string='pads'] Sub-directory where the pads info files are stored
       pads_info_dir: 'pads'
+      # [string='BIN'] [BIN,TOML] Format for the pads. Use 'TOML' for 2.17+
+      pads_info_format: 'BIN'
       # [string|list(string)='_null'] Name of the filter to transform fields before applying other filters.
       # Is a short-cut to use for simple cases where a variant is an overkill.
       # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the
@@ -3162,7 +3174,7 @@ outputs:
       stackup_dir: '.'
       # [string='board.yaml'] Name for the stackup file. Use 'stackup' for 2.7+
       stackup_file: 'board.yaml'
-      # [string='JSON'] [JSON,BIN] Format for the stackup file. Use 'BIN' for 2.7+
+      # [string='JSON'] [JSON,BIN,TOML] Format for the stackup file. Use 'BIN' for 2.7+
       stackup_format: 'JSON'
       # [string='bounds'] File name for the sub-PCBs bounds
       sub_boards_bounds_file: 'bounds'
@@ -3180,7 +3192,7 @@ outputs:
   # Important: `colored_vias` and `colored_pads` usually involves a zones refill. To avoid side
   # effects we reload the PCB, which might be slow. If refills are tolerable for your case and
   # you want to make it faster just add a `check_zone_fills` preflight. This will skip the reload
-  # Important: If you use custom fonts and/or colors please consult the `resources_dir` global variable.
+  #         Important: If you use custom fonts and/or colors please consult the `resources_dir` global variable.
   - name: 'pcb_print_example'
     comment: 'Prints the PCB using a mechanism that is more flexible than `pdf_pcb_print` and `svg_pcb_print`.'
     type: 'pcb_print'
@@ -3439,7 +3451,8 @@ outputs:
           # In addition when you use `repeat_for_layer` the following patterns are available:
           # %ln layer name, %ls layer suffix and %ld layer description.
           # When `repeat_layers` is `drill_pairs`, the following additional patterns are available:
-          # %lpn layer name pair, %lp layer pair
+          # %lpn layer name pair, %lp layer pair.
+          # Important: The variable name is `SHEETNAME`. Usually used as `SHEET: ${SHEETNAME}`
           sheet: 'Assembly'
           # [string=''] Color to use for the frame and title block
           sheet_reference_color: ''
@@ -3667,7 +3680,7 @@ outputs:
   # Note that this output isn't the best for documating your project.
   # This output is what you get from the File/Plot menu in pcbnew.
   # The `pcb_print` is usually a better alternative.
-  # Important: If you use custom fonts and/or colors please consult the `resources_dir` global variable.
+  #         Important: If you use custom fonts and/or colors please consult the `resources_dir` global variable.
   - name: 'pdf_example'
     comment: 'Exports the PCB to the most common exchange format. Suitable for printing.'
     type: 'pdf'
@@ -3753,7 +3766,7 @@ outputs:
   # This is the main format to document your PCB.
   # This output is what you get from the 'File/Print' menu in pcbnew.
   # The `pcb_print` is usually a better alternative.
-  # Important: If you use custom fonts and/or colors please consult the `resources_dir` global variable.
+  #         Important: If you use custom fonts and/or colors please consult the `resources_dir` global variable.
   - name: 'pdf_pcb_print_example'
     comment: 'Exports the PCB to the most common exchange format. Suitable for printing.'
     type: 'pdf_pcb_print'
@@ -3810,7 +3823,7 @@ outputs:
   # This is the main format to document your schematic.
   # This output is what you get from the 'File/Plot' menu in eeschema.
   # Supports the image replacement using the prefix indicated by the `sch_image_prefix` global variable
-  # Important: If you use custom fonts and/or colors please consult the `resources_dir` global variable.
+  #         Important: If you use custom fonts and/or colors please consult the `resources_dir` global variable.
   - name: 'pdf_sch_print_example'
     comment: 'Exports the schematic to the most common exchange format. Suitable for printing.'
     type: 'pdf_sch_print'
@@ -3974,6 +3987,9 @@ outputs:
       right_digits: 4
       # [boolean=true] Generate two separated files, one for the top and another for the bottom
       separate_files_for_front_and_back: true
+      # [string=','] CSV Separator. Only used for CSV format.
+      # Only one character can be specified
+      separator: ','
       # [string='millimeters'] [millimeters,inches,mils] Units used for the positions. Affected by global options
       units: 'millimeters'
       # [boolean=true] Use the auxiliary axis as origin for coordinates (KiCad default).
@@ -3984,7 +4000,7 @@ outputs:
   # PS (Postscript):
   # This output is what you get from the File/Plot menu in pcbnew.
   # The `pcb_print` is usually a better alternative.
-  # Important: If you use custom fonts and/or colors please consult the `resources_dir` global variable.
+  #         Important: If you use custom fonts and/or colors please consult the `resources_dir` global variable.
   - name: 'ps_example'
     comment: 'Exports the PCB to a format suitable for printing.'
     type: 'ps'
@@ -4080,7 +4096,7 @@ outputs:
   # PS Schematic Print (Postscript):
   # This output is what you get from the 'File/Plot' menu in eeschema.
   # Supports the image replacement using the prefix indicated by the `sch_image_prefix` global variable
-  # Important: If you use custom fonts and/or colors please consult the `resources_dir` global variable.
+  #         Important: If you use custom fonts and/or colors please consult the `resources_dir` global variable.
   - name: 'ps_sch_print_example'
     comment: 'Exports the schematic in postscript. Suitable for printing.'
     type: 'ps_sch_print'
@@ -4617,7 +4633,7 @@ outputs:
   # Unlike bitmaps SVG drawings can be scaled without losing resolution.
   # This output is what you get from the File/Plot menu in pcbnew.
   # The `pcb_print` is usually a better alternative.
-  # Important: If you use custom fonts and/or colors please consult the `resources_dir` global variable.
+  #         Important: If you use custom fonts and/or colors please consult the `resources_dir` global variable.
   - name: 'svg_example'
     comment: 'Exports the PCB to a format suitable for 2D graphics software.'
     type: 'svg'
@@ -4730,7 +4746,7 @@ outputs:
   # SVG PCB Print (Scalable Vector Graphics) *Deprecated*:
   # This output is what you get from the 'File/Print' menu in pcbnew.
   # The `pcb_print` is usually a better alternative.
-  # Important: If you use custom fonts and/or colors please consult the `resources_dir` global variable.
+  #         Important: If you use custom fonts and/or colors please consult the `resources_dir` global variable.
   - name: 'svg_pcb_print_example'
     comment: 'Exports the PCB to the scalable vector graphics format.'
     type: 'svg_pcb_print'
@@ -4791,7 +4807,7 @@ outputs:
   # This is a format to document your schematic.
   # This output is what you get from the 'File/Plot' menu in eeschema.
   # Supports the image replacement using the prefix indicated by the `sch_image_prefix` global variable
-  # Important: If you use custom fonts and/or colors please consult the `resources_dir` global variable.
+  #         Important: If you use custom fonts and/or colors please consult the `resources_dir` global variable.
   - name: 'svg_sch_print_example'
     comment: 'Exports the schematic in a vectorized graphics format.'
     type: 'svg_sch_print'

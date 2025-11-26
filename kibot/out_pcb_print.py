@@ -36,8 +36,9 @@ import io
 import re
 import os
 import importlib
-from pcbnew import B_Cu, B_Mask, F_Cu, F_Mask, FromMM, IsCopperLayer, LSET, PLOT_CONTROLLER, PLOT_FORMAT_SVG
+from pcbnew import B_Cu, B_Mask, F_Cu, F_Mask, FromMM, IsCopperLayer, LSET, PLOT_CONTROLLER, PLOT_FORMAT_SVG, VECTOR2I
 from shutil import rmtree, copy2
+from subprocess import CalledProcessError
 import sys
 from .error import KiPlotConfigurationError
 from .fil_base import BaseFilter, apply_exclude_filter
@@ -55,7 +56,7 @@ from .kicad.v5_sch import SchError
 from .kicad.pcb import PCB
 from .misc import (PDF_PCB_PRINT, W_PDMASKFAIL, W_MISSTOOL, PCBDRAW_ERR, W_PCBDRAW, VIATYPE_THROUGH, VIATYPE_BLIND_BURIED,
                    VIATYPE_MICROVIA, FONT_HELP_TEXT, W_BUG16418, pretty_list, try_int, W_NOPAGES, W_NOLAYERS, W_NOTHREPE,
-                   RENDERERS, read_png, EMBED_PREFIX, KICAD_VERSION_9_0_1)
+                   RENDERERS, read_png, EMBED_PREFIX, KICAD_VERSION_9_0_1, W_NOVISLA)
 from .create_pdf import create_pdf_from_pages
 from .macros import macros, document, output_class  # noqa: F401
 from .drill_marks import DRILL_MARKS_MAP, add_drill_marks
@@ -93,7 +94,13 @@ def pcbdraw_warnings(tag, msg):
 
 
 def _run_command(cmd):
-    run_command(cmd, err_lvl=PDF_PCB_PRINT)
+    try:
+        run_command(cmd, err_lvl=PDF_PCB_PRINT, just_raise=True)
+    except CalledProcessError as e:
+        output = e.stdout or e.stderr
+        if '--unlimited' in output.decode():
+            cmd.remove('--unlimited')
+            return run_command(cmd, err_lvl=PDF_PCB_PRINT)
 
 
 def hex_to_rgb(value):
@@ -236,7 +243,8 @@ class PagesOptions(Optionable):
                 In addition when you use `repeat_for_layer` the following patterns are available:
                 %ln layer name, %ls layer suffix and %ld layer description.
                 When `repeat_layers` is `drill_pairs`, the following additional patterns are available:
-                %lpn layer name pair, %lp layer pair """
+                %lpn layer name pair, %lp layer pair.
+                Important: The variable name is `SHEETNAME`. Usually used as `SHEET: ${SHEETNAME}` """
             self.layer_var = '%ll'
             """ Text to use for the `LAYER` in the title block.
                 All the expansions available for `sheet` are also available here """
@@ -828,9 +836,14 @@ class PCB_PrintOptions(VariantOptions):
             for pad in m.Pads():
                 layers = pad.GetLayerSet()
                 if GS.layers_contains(layers, id):
-                    layers.removeLayer(id)
-                    pad.SetLayerSet(layers)
-                    removed.append(pad)
+                    if GS.ki9:
+                        old_size = pad.GetSize()
+                        pad.SetSize(VECTOR2I(0, 0))
+                        removed.append((pad, old_size))
+                    else:
+                        layers.removeLayer(id)
+                        pad.SetLayerSet(layers)
+                        removed.append(pad)
         for e in GS.board.GetDrawings():
             if e.GetLayer() == id:
                 e.SetLayer(tmp_layer)
@@ -877,10 +890,14 @@ class PCB_PrintOptions(VariantOptions):
         # Restore everything
         for e in moved:
             e.SetLayer(id)
-        for pad in removed:
-            layers = pad.GetLayerSet()
-            layers.addLayer(id)
-            pad.SetLayerSet(layers)
+        if GS.ki9:
+            for pad, size in removed:
+                pad.SetSize(size)
+        else:
+            for pad in removed:
+                layers = pad.GetLayerSet()
+                layers.addLayer(id)
+                pad.SetLayerSet(layers)
         for (via, drill, width, top, bottom) in vias:
             via.SetDrill(drill)
             GS.set_via_width(via, width)
@@ -1299,8 +1316,8 @@ class PCB_PrintOptions(VariantOptions):
         # We use a 5x scale and then reduce it to maintain the page size
         # Note: rsvg 2.50.3 has this problem 2.54.5 doesn't, so we ensure the size is correct, not a fixed scale
         dpi = str(self.dpi)
-        cmd = [self.rsvg_command, '-d', dpi, '-p', dpi, '-f', 'pdf', '-o', os.path.join(input_folder, pdf_file),
-               os.path.join(input_folder, svg_file)]
+        cmd = [self.rsvg_command, '-d', dpi, '-p', dpi, '-f', 'pdf', '--unlimited', '-o',
+               os.path.join(input_folder, pdf_file), os.path.join(input_folder, svg_file)]
         _run_command(cmd)
 
     # We can't control the resolution in this way
@@ -1419,18 +1436,25 @@ class PCB_PrintOptions(VariantOptions):
         po.SetUseAuxOrigin(False)
         po.SetAutoScale(False)
         GS.SetSvgPrecision(po, self.svg_precision)
+        if GS.global_disable_kicad_cross_on_fab and hasattr(po, "SetCrossoutDNPFPsOnFabLayers"):
+            po.SetCrossoutDNPFPsOnFabLayers(False)
         return pc, po
 
     def set_visible(self, edge_id):
         if not self.individual_page_scaling:
+            logger.debug("Global page scaling enabled")
             # Make all the layers in all the pages visible
             vis_layers = LSET()
             for p in self._pages:
                 for la in p._layers:
                     if la.use_for_center ^ self.invert_use_for_center:
                         vis_layers.addLayer(la._id)
+                        logger.debug("- {la.layer}")
             if self.force_edge_cuts and (self.forced_edge_cuts_use_for_center ^ self.invert_use_for_center):
                 vis_layers.addLayer(edge_id)
+                logger.debug("- Edge id {edge_id}")
+            if not len(vis_layers.Seq()):
+                logger.warning(W_NOVISLA+"No layer available for centering purposes")
             GS.board.SetVisibleLayers(vis_layers)
 
     def exclude_components_from_layer(self, layer):

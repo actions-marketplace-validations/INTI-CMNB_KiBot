@@ -33,6 +33,8 @@ root_logger = None
 visual_level = None
 debug_level = 0
 stop_on_warnings = False
+dont_stop = False
+errors_ignored = False
 record_error_msgs = False
 recorded_error_msgs = []
 re_dk_client_id = re.compile("DIGIKEY_CLIENT_ID=([^']+)")
@@ -120,6 +122,7 @@ class MyLogger(logging.Logger):
                 for f in filters:
                     if (f.number == number or f.error == id) and f._regex.search(buf):
                         MyLogger.n_filtered += 1
+                        self.debug('Filtered warning: '+buf, **kwargs)
                         return
         MyLogger.warn_cnt += 1
         MyLogger.warn_hash[buf] = 1
@@ -140,7 +143,10 @@ class MyLogger(logging.Logger):
     def check_warn_stop(self):
         if stop_on_warnings:
             self.error('Warnings treated as errors')
-            sys.exit(WARN_AS_ERROR)
+            if dont_stop:
+                pass
+            else:
+                sys.exit(WARN_AS_ERROR)
 
     def log(self, level, msg, *args, **kwargs):
         if level < self.getEffectiveLevel():

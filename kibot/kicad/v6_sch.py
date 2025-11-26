@@ -665,6 +665,7 @@ class SchematicFieldV6(object):
         self.effects = FontEffects()
         self.do_not_autoplace = False
         self.show_name = False
+        self.private = False
 
     def visible(self, v):
         self.effects.hide = not v
@@ -689,16 +690,23 @@ class SchematicFieldV6(object):
     def parse(items, number):
         field = SchematicFieldV6()
         name = 'field'
-        field.name = _check_str(items, 1, name+' name')
-        field.value = _check_str(items, 2, name+' value')
+        offset = 0
+        # KiCad 9 and the never ending story: tons of things went from loose symbols to real attributes,
+        # but here a new one is introduced ... and before the important data. OMG!!!
+        if isinstance(items[1], Symbol):
+            assert items[1].value() == 'private', items[1].value()
+            offset = 1
+            field.private = True
+        field.name = _check_str(items, offset+1, name+' name')
+        field.value = _check_str(items, offset+2, name+' value')
         # Default values
         field.number = number
         field.effects = None
         found_at = False
-        for c, i in enumerate(items[3:]):
+        for c, i in enumerate(items[offset+3:]):
             i_type = _check_is_symbol_list(i)
             if i_type == 'at':
-                field.x, field.y, field.ang = _get_at(items, c+3, name)
+                field.x, field.y, field.ang = _get_at(items, c+offset+3, name)
                 found_at = True
             elif i_type == 'effects':
                 field.effects = FontEffects.parse(i)
@@ -717,7 +725,11 @@ class SchematicFieldV6(object):
     def write(self):
         if self.number < 0:
             return None
-        data = [self.name, self.value]
+        data = []
+        if self.private:
+            data.append(Symbol('private'))
+        data.append(self.name)
+        data.append(self.value)
         if version < KICAD_7_VER:
             # Removed in KiCad 7
             data.append(_symbol('id', [self.number]))
@@ -1121,6 +1133,20 @@ class SchematicComponentV6(SchematicComponent):
         else:
             raise SchError('Footprint with more than one colon (`{}`)'.format(fp))
         self.set_field('Footprint', fp)
+
+    def copy(self):
+        """ Make a deep copy, but not for all """
+        # Don't copy the links to projects, parent_sheet and library symbol
+        projects = self.projects
+        parent_sheet = self.parent_sheet
+        lib_symbol = self.lib_symbol
+        self.projects = self.parent_sheet = self.lib_symbol = None
+        # All the rest is copied
+        new_c = deepcopy(self)
+        new_c.projects = self.projects = projects
+        new_c.parent_sheet = self.parent_sheet = parent_sheet
+        new_c.lib_symbol = self.lib_symbol = lib_symbol
+        return new_c
 
     @staticmethod
     def get_lib_and_name(comp, i, name):

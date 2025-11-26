@@ -1971,6 +1971,13 @@
             "DataTypeBoolean"
           ],
           null
+        ],
+        [
+          "expand_dest",
+          [
+            "DataTypeBoolean"
+          ],
+          null
         ]
       ]
     ]
@@ -2112,6 +2119,13 @@
         ],
         [
           "link_no_copy",
+          [
+            "DataTypeBoolean"
+          ],
+          null
+        ],
+        [
+          "expand_dest",
           [
             "DataTypeBoolean"
           ],
@@ -2333,6 +2347,13 @@
         ],
         [
           "threshold",
+          [
+            "DataTypeNumber"
+          ],
+          null
+        ],
+        [
+          "dpi",
           [
             "DataTypeNumber"
           ],
@@ -9289,6 +9310,13 @@
           null
         ],
         [
+          "board_bounds_format",
+          [
+            "DataTypeChoice"
+          ],
+          null
+        ],
+        [
           "pads_info_create",
           [
             "DataTypeBoolean"
@@ -9299,6 +9327,13 @@
           "pads_info_dir",
           [
             "DataTypeString"
+          ],
+          null
+        ],
+        [
+          "pads_info_format",
+          [
+            "DataTypeChoice"
           ],
           null
         ],
@@ -12133,6 +12168,13 @@
           "quote_all",
           [
             "DataTypeBoolean"
+          ],
+          null
+        ],
+        [
+          "separator",
+          [
+            "DataTypeString"
           ],
           null
         ],

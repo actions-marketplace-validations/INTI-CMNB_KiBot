@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-# Copyright (c) 2021-2023 Salvador E. Tropea
-# Copyright (c) 2021-2023 Instituto Nacional de Tecnología Industrial
+# Copyright (c) 2021-2025 Salvador E. Tropea
+# Copyright (c) 2021-2025 Instituto Nacional de Tecnología Industrial
 # License: GPL-3.0
 # Project: KiBot (formerly KiPlot)
 """
@@ -23,7 +23,7 @@ from tarfile import open as tar_open
 from collections import OrderedDict
 from .gs import GS
 from .kiplot import config_output, run_output, get_output_targets, run_command
-from .misc import WRONG_INSTALL, W_EMPTYZIP, INTERNAL_ERROR
+from .misc import WRONG_INSTALL, W_EMPTYZIP, INTERNAL_ERROR, W_NOFILES
 from .optionable import Optionable, BaseOptions
 from .registrable import RegOutput
 from .macros import macros, document, output_class  # noqa: F401
@@ -91,6 +91,8 @@ class CompressOptions(BaseOptions):
             """ Store the file pointed by symlinks, not the symlink """
             self.skip_not_run = False
             """ Skip outputs with `run_by_default: false` """
+            self.expand_dest = True
+            """ Also expand the `dest` file name (using % patterns) """
         super().__init__()
 
     def config(self, parent):
@@ -203,9 +205,12 @@ class CompressOptions(BaseOptions):
             else:
                 out_dir = out_dir_cwd if f.from_cwd else out_dir_default
                 source = f.expand_filename_both(f.source, make_safe=False)
-                files_list = glob.iglob(os.path.join(out_dir, source), recursive=True)
+                source_path = os.path.join(out_dir, source)
+                files_list = glob.iglob(source_path, recursive=True)
+                files_list = [f for f in files_list if os.path.exists(f)]
+                if not files_list:
+                    logger.warning(W_NOFILES+f"Pattern `{source_path}` expanded to nothing")
                 if GS.debug_level > 1:
-                    files_list = list(files_list)
                     logger.debug('- Pattern {} list of files: {}'.format(source, files_list))
             # Compute the reference dir when no f.dest
             out_dir = out_dir_cwd if f.from_cwd else out_dir_default
@@ -220,7 +225,8 @@ class CompressOptions(BaseOptions):
                 # Compute the destination directory inside the archive
                 dest = fname
                 if f.dest:
-                    dest = os.path.join(f.dest, os.path.basename(fname))
+                    dest_exp = f.expand_filename_both(f.dest, make_safe=False) if self.expand_dest else f.dest
+                    dest = os.path.join(dest_exp, os.path.basename(fname))
                 else:
                     dest = os.path.relpath(dest, out_dir)
                 files[fname_real] = dest

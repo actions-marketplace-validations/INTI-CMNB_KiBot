@@ -237,7 +237,7 @@ class Events(object):
             writer.writerows(self.e)
 
 
-def run_test(num, test_dir, project, recipe, keep_project=False, no_board_file=False, no_yaml_file=False):
+def run_test(num, monkeypatch, test_dir, project, recipe, keep_project=False, no_board_file=False, no_yaml_file=False):
     id = "%04d" % num
     base_name = sys._getframe(1).f_code.co_name[9:]
     yaml_base = f'{id}.kibot.yaml'
@@ -251,18 +251,21 @@ def run_test(num, test_dir, project, recipe, keep_project=False, no_board_file=F
     recipe(ctx).save_events(cfg)
     logging.debug(f'Using `{cfg}` events')
     yaml_out = ctx.get_out_path('result.kibot.yaml')
-    try:
-        with Xvfb(width=1920, height=1080, colordepth=24):
-            with start_record(True, ctx.output_dir, base_name):
-                extra = ['--gui', '-I', cfg]
-                ctx.run(extra=extra, no_board_file=no_board_file, no_yaml_file=no_yaml_file)
-    finally:
-        with open(yaml_ori) as f:
-            yaml_res = f.read()
-        with open(yaml_ori, 'w') as f:
-            f.write(yaml_txt)
-        with open(yaml_out, 'w') as f:
-            f.write(yaml_res)
+    with monkeypatch.context() as m:
+        m.setenv("LANG", "en")
+        try:
+            os.environ['LANG'] = 'en'
+            with Xvfb(width=1920, height=1080, colordepth=24):
+                with start_record(True, ctx.output_dir, base_name):
+                    extra = ['--gui', '-I', cfg]
+                    ctx.run(extra=extra, no_board_file=no_board_file, no_yaml_file=no_yaml_file)
+        finally:
+            with open(yaml_ori) as f:
+                yaml_res = f.read()
+            with open(yaml_ori, 'w') as f:
+                f.write(yaml_txt)
+            with open(yaml_out, 'w') as f:
+                f.write(yaml_res)
     ctx.compare_txt(text=os.path.abspath(yaml_out), reference=os.path.abspath('tests/GUI/cfg_out/'+yaml_base))
     ctx.clean_up(keep_project=keep_project)
 
@@ -337,17 +340,18 @@ def try_groups_1_recipe(ctx):
 
 
 @pytest.mark.indep
-def test_gui_new_board_view_1(test_dir):
+def test_gui_new_board_view_1(test_dir, monkeypatch):
     """ We start without config.
         Force a known YAML, set an SCH, add a boardview output, name it test_output and save """
-    run_test(1, test_dir, 'light_control', new_board_view_recipe, keep_project=True, no_board_file=True, no_yaml_file=True)
+    run_test(1, monkeypatch, test_dir, 'light_control', new_board_view_recipe, keep_project=True, no_board_file=True,
+             no_yaml_file=True)
 
 
 @pytest.mark.indep
-def test_gui_new_board_view_2(test_dir):
+def test_gui_new_board_view_2(test_dir, monkeypatch):
     """ We start with config and SCH.
         Add a boardview output, name it test_output and save """
-    run_test(2, test_dir, 'light_control', new_board_view_deep_recipe, keep_project=True)
+    run_test(2, monkeypatch, test_dir, 'light_control', new_board_view_deep_recipe, keep_project=True)
 
 
 def get_simple(path, items):
@@ -500,25 +504,25 @@ def try_all_variants_recipe(ctx):
 
 
 @pytest.mark.indep
-def test_gui_try_all_outputs_1(test_dir):
-    run_test(3, test_dir, 'light_control', try_all_outputs_recipe, keep_project=True)
+def test_gui_try_all_outputs_1(test_dir, monkeypatch):
+    run_test(3, monkeypatch, test_dir, 'light_control', try_all_outputs_recipe, keep_project=True)
 
 
 @pytest.mark.indep
-def test_gui_try_all_preflights_1(test_dir):
-    run_test(4, test_dir, 'light_control', try_all_preflights_recipe, keep_project=True)
+def test_gui_try_all_preflights_1(test_dir, monkeypatch):
+    run_test(4, monkeypatch, test_dir, 'light_control', try_all_preflights_recipe, keep_project=True)
 
 
 @pytest.mark.indep
-def test_gui_try_all_filters_1(test_dir):
-    run_test(5, test_dir, 'light_control', try_all_filters_recipe, keep_project=True)
+def test_gui_try_all_filters_1(test_dir, monkeypatch):
+    run_test(5, monkeypatch, test_dir, 'light_control', try_all_filters_recipe, keep_project=True)
 
 
 @pytest.mark.indep
-def test_gui_try_all_variants_1(test_dir):
-    run_test(6, test_dir, 'light_control', try_all_variants_recipe, keep_project=True)
+def test_gui_try_all_variants_1(test_dir, monkeypatch):
+    run_test(6, monkeypatch, test_dir, 'light_control', try_all_variants_recipe, keep_project=True)
 
 
 @pytest.mark.indep
-def test_gui_groups_1(test_dir):
-    run_test(7, test_dir, 'light_control', try_groups_1_recipe, keep_project=True)
+def test_gui_groups_1(test_dir, monkeypatch):
+    run_test(7, monkeypatch, test_dir, 'light_control', try_groups_1_recipe, keep_project=True)

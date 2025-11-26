@@ -1,15 +1,24 @@
 # -*- coding: utf-8 -*-
-# Copyright (c) 2020-2021 Salvador E. Tropea
-# Copyright (c) 2020-2021 Instituto Nacional de Tecnología Industrial
+# Copyright (c) 2020-2025 Salvador E. Tropea
+# Copyright (c) 2020-2025 Instituto Nacional de Tecnología Industrial
 # License: GPL-3.0
 # Project: KiBot (formerly KiPlot)
 """
 Macros to make the output plug-ins cleaner.
 """
+import numbers
 from .gs import GS  # noqa: F401
-from ast import (Assign, Name, Attribute, Expr, Num, Str, NameConstant, Load, Store, UnaryOp, USub,
-                 ClassDef, Call, ImportFrom, copy_location, alias)
+from ast import (Assign, Name, Attribute, Expr, Load, Store, UnaryOp, USub,
+                 ClassDef, Call, ImportFrom, copy_location, alias, Constant)
 from .mcpyrate import unparse
+
+
+def is_num(value):
+    return isinstance(value, Constant) and isinstance(value.value, numbers.Number)
+
+
+def is_str(value):
+    return isinstance(value, Constant) and isinstance(value.value, str)
 
 
 def document(sentences, **kw):
@@ -25,7 +34,7 @@ def document(sentences, **kw):
             prev = s
             continue
         # The whole sentence is a string?
-        if (isinstance(s, Expr) and isinstance(s.value, Str) and
+        if (isinstance(s, Expr) and is_str(s.value) and
            # and the previous is an assign
            isinstance(prev, Assign)):  # noqa: E128
             # Apply it to the first target
@@ -48,15 +57,16 @@ def document(sentences, **kw):
             # Create the type hint for numbers, strings and booleans
             type_hint = ''
             post_hint = ''
-            if isinstance(value, Num):
-                type_hint = '[number={}]'.format(value.n)
-            elif isinstance(value, UnaryOp) and isinstance(value.operand, Num) and isinstance(value.op, USub):
-                # -Num
-                type_hint = '[number={}]'.format(-value.operand.n)
-            elif isinstance(value, Str):
-                type_hint = "[string='{}']".format(value.s)
-            elif isinstance(value, NameConstant) and isinstance(value.value, bool):
+            if isinstance(value, Constant) and isinstance(value.value, bool):
+                # Bool checked first because they are a subclass of number
                 type_hint = '[boolean={}]'.format(str(value.value).lower())
+            elif is_num(value):
+                type_hint = '[number={}]'.format(value.value)
+            elif isinstance(value, UnaryOp) and is_num(value.operand) and isinstance(value.op, USub):
+                # -Num
+                type_hint = '[number={}]'.format(-value.operand.value)
+            elif is_str(value):
+                type_hint = "[string='{}']".format(value.s)
             elif isinstance(value, Attribute):
                 # Used for the default options. I.e. GS.def_global_option
                 val = eval(unparse(value))
@@ -105,7 +115,7 @@ def _do_wrap_class_register(tree, mod, base_class):
         # BaseOutput.register member:
         attr = Attribute(value=Name(id=base_class, ctx=Load()), attr='register', ctx=Load())
         # Function call to it passing reg_name and name
-        do_register = Expr(value=Call(func=attr, args=[Str(s=reg_name), Name(id=name, ctx=Load())], keywords=[]))
+        do_register = Expr(value=Call(func=attr, args=[Constant(s=reg_name), Name(id=name, ctx=Load())], keywords=[]))
         # Create the import
         do_import = ImportFrom(module=mod, names=[alias(name=base_class, asname=None, lineno=tree.lineno,
                                col_offset=tree.col_offset)], level=1)

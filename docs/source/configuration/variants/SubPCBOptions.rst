@@ -18,6 +18,8 @@ SubPCBOptions parameters
    You can disable it only for the internal tool, KiKit should always do it.
 -  ``file_id`` :index:`: <pair: variant - kicost - sub_pcbs; file_id>` [:ref:`string <string>`] (default: ``''``) Text to use as the replacement for %v expansion.
    When empty we use the parent `file_id` plus the `name` of the sub-PCB.
+-  ``ref_layer`` :index:`: <pair: variant - kicost - sub_pcbs; ref_layer>` [:ref:`string <string>`] (default: ``'Edge.Cuts'``) Layer where the PCB outline indicated by `reference` is found.
+   So you can use an outline that is not the real PCB contour.
 -  ``strip_annotation`` :index:`: <pair: variant - kicost - sub_pcbs; strip_annotation>` [:ref:`boolean <boolean>`] (default: ``false``) Remove the annotation footprint. Note that KiKit will remove all annotations,
    but the internal implementation just the one indicated by `ref`. |br|
    If you need to remove other annotations use an exclude filter.

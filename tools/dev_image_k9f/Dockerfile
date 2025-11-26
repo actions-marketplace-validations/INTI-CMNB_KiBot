@@ -1,9 +1,10 @@
 FROM ghcr.io/inti-cmnb/kicad_auto_test:ki9
-MAINTAINER Salvador E. Tropea <stropea@inti.gob.ar>
+LABEL MAINTAINER="Salvador E. Tropea <stropea@inti.gob.ar>"
 LABEL Description="KiCad 9 with KiBot and other automation scripts"
 
 RUN     dpkg --remove kibot && \
 	apt-get update && \
+	apt-get -y install --no-install-recommends python3-setuptools && \
 	curl https://codeload.github.com/INTI-CMNB/KiBot/zip/refs/heads/dev --output pp.zip && \
 	unzip pp.zip && \
 	curl https://codeload.github.com/yaqwsx/PcbDraw-Lib/zip/refs/heads/master --output pp2.zip && \

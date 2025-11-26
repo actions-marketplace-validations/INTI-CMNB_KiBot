@@ -105,6 +105,9 @@ def _run_command(cmd):
         cmd_output = subprocess.check_output(cmd, stderr=subprocess.STDOUT)
     except subprocess.CalledProcessError as e:
         odecoded = e.output.decode() if e.output else None
+        if '--unlimited' in odecoded:
+            cmd.remove('--unlimited')
+            return _run_command(cmd)
         if odecoded:
             logger.debug('Output from command: '+odecoded)
         logger.non_critical_error(f'Failed to run {cmd[0]}, error {e.returncode}')
@@ -204,7 +207,7 @@ class Any_Navigate_ResultsOptions(BaseOptions):
             node[out.name] = out
 
     def svg_to_png(self, svg_file, png_file, width):
-        cmd = [self.rsvg_command, '-w', str(width), '-f', 'png', '-o', png_file, svg_file]
+        cmd = [self.rsvg_command, '-w', str(width), '-f', 'png', '--unlimited', '-o', png_file, svg_file]
         return _run_command(cmd)
 
     def copy(self, img, width):

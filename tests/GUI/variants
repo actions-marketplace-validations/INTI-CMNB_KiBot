@@ -77,6 +77,13 @@
           null
         ],
         [
+          "ref_layer",
+          [
+            "DataTypeString"
+          ],
+          null
+        ],
+        [
           "tlx",
           [
             "DataTypeString",
@@ -253,6 +260,13 @@
           null
         ],
         [
+          "ref_layer",
+          [
+            "DataTypeString"
+          ],
+          null
+        ],
+        [
           "tlx",
           [
             "DataTypeString",
@@ -416,6 +430,13 @@
         ],
         [
           "reference",
+          [
+            "DataTypeString"
+          ],
+          null
+        ],
+        [
+          "ref_layer",
           [
             "DataTypeString"
           ],

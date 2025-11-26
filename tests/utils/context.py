@@ -36,6 +36,7 @@ KICAD_VERSION_7_0_10 = 7000010
 KICAD_VERSION_7_0_11 = 7000011
 KICAD_VERSION_8_0_0 = 7099000
 KICAD_VERSION_9_0_0 = 9000000
+KICAD_VERSION_9_0_5 = 9000005
 MODE_SCH = 1
 MODE_PCB = 0
 # Defined as True to collect real world queries
@@ -58,7 +59,9 @@ if kicad_version >= KICAD_VERSION_5_99:
     if km > 9:
         km = 9
     BOARDS_DIR = '../board_samples/kicad_'+str(km)
-    if kicad_version >= KICAD_VERSION_9_0_0:
+    if kicad_version >= KICAD_VERSION_9_0_5:
+        REF_DIR = 'tests/reference/9_0_5'
+    elif kicad_version >= KICAD_VERSION_9_0_0:
         REF_DIR = 'tests/reference/9_0_1'
     elif kicad_version >= KICAD_VERSION_8_0_0:
         REF_DIR = 'tests/reference/8_0_0'
@@ -573,7 +576,7 @@ class TestContext(object):
         png_ref = None
         if reference[-3:] == 'svg':
             png_ref = reference[:-3]+'png'
-            cmd = ['rsvg-convert', '-b', '#FFFFFF', '-h', '2160', '-o', png_ref, reference]
+            cmd = ['rsvg-convert', '-b', '#FFFFFF', '-h', '2160', '--unlimited', '-o', png_ref, reference]
             logging.debug('Converting reference to PNG with: '+usable_cmd(cmd))
             subprocess.check_call(cmd)
             reference = png_ref
@@ -581,7 +584,7 @@ class TestContext(object):
         png_image = None
         if image[-3:] == 'svg':
             png_image = image[:-3]+'png'
-            cmd = ['rsvg-convert', '-b', '#FFFFFF', '-h', '2160', '-o', png_image, image]
+            cmd = ['rsvg-convert', '-b', '#FFFFFF', '-h', '2160', '--unlimited', '-o', png_image, image]
             logging.debug('Converting result image to PNG with: '+usable_cmd(cmd))
             subprocess.check_call(cmd)
             image = png_image
@@ -589,7 +592,7 @@ class TestContext(object):
         if trim:
             cmd = ['convert', image, '-trim', image]
             subprocess.run(cmd)
-        cmd = ['compare',
+        cmd = ['compare', '-density', '600',
                # Tolerate 5 % error in color
                '-fuzz', fuzz,
                # Count how many pixels differ
@@ -892,7 +895,7 @@ class TestContext(object):
         links = {}
         nr = '{http://schemas.openxmlformats.org/officeDocument/2006/relationships}'
         hlinks = root.find(ns+'hyperlinks')
-        if hlinks:
+        if hlinks is not None:
             for r in hlinks.iter(ns+'hyperlink'):
                 links[r.attrib['ref']] = r.attrib[nr+'id']
         # Read the strings

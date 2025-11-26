@@ -92,6 +92,8 @@ class Copy_FilesOptions(Base3DOptions):
             """ Store the file pointed by symlinks, not the symlink """
             self.link_no_copy = False
             """ Create symlinks instead of copying files """
+            self.expand_dest = True
+            """ Also expand the `dest` file name (using % patterns) """
         super().__init__()
         self._expand_id = 'copy'
         self._expand_ext = 'files'
@@ -202,12 +204,13 @@ class Copy_FilesOptions(Base3DOptions):
         extra_files = []
         GS.check_pcb()
         GS.load_board()
+        dest_exp = f.expand_filename_both(f.dest, make_safe=False) if self.expand_dest else f.dest
         if mode_project:
             # From the PCB point this is just the 3D models dir
             f.output_dir = '3d_models'
             f._append_mode = True
         else:
-            dest_dir = f.dest
+            dest_dir = dest_exp
             f._append_mode = False
             if dest_dir and dest_dir[-1] == '+':
                 dest_dir = dest_dir[:-1]
@@ -222,7 +225,7 @@ class Copy_FilesOptions(Base3DOptions):
         if f.save_pcb or mode_project:
             dest_dir = self.output_dir
             if mode_project:
-                dest_dir = os.path.join(dest_dir, f.dest)
+                dest_dir = os.path.join(dest_dir, dest_exp)
                 os.makedirs(dest_dir, exist_ok=True)
             fname = os.path.join(dest_dir, os.path.basename(GS.pcb_file))
             if not dry:
@@ -256,8 +259,8 @@ class Copy_FilesOptions(Base3DOptions):
             if wks[1] and not wks[1].startswith(EMBED_PREFIX):  # PCB WKS
                 extra_files.append(os.path.join(os.path.dirname(prj_name), 'pcbnew.kicad_wks'))
             if mode_project:
-                extra_files += self.copy_footprints(f.dest, dry)
-                extra_files += self.copy_symbols(f.dest, dry)
+                extra_files += self.copy_footprints(dest_exp, dry)
+                extra_files += self.copy_symbols(dest_exp, dry)
         if not self._comps:
             # We must undo the download/rename
             self.undo_3d_models_rename(GS.board)
@@ -276,7 +279,7 @@ class Copy_FilesOptions(Base3DOptions):
                     new_list.append(fn)
         if mode_project:
             # From the output point this needs to add the destination dir
-            f.output_dir = os.path.join(f.dest, f.output_dir)
+            f.output_dir = os.path.join(dest_exp, f.output_dir)
         return files_list+fnmatch.filter(new_list, f.source), extra_files
 
     def get_files(self, no_out_run=False):
@@ -326,7 +329,8 @@ class Copy_FilesOptions(Base3DOptions):
                 if f.dest and not f._append_mode:
                     # A destination specified by the user
                     # All files goes to the same destination directory
-                    dest = os.path.join(f.dest, os.path.basename(fname))
+                    dest_exp = f.expand_filename_both(f.dest, make_safe=False) if self.expand_dest else f.dest
+                    dest = os.path.join(dest_exp, os.path.basename(fname))
                 elif (mode_3d or mode_project) and is_abs:
                     for d in self.rel_dirs:
                         if d is not None and fname.startswith(d):

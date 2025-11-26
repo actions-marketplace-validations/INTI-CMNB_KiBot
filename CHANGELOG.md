@@ -5,6 +5,52 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [1.8.5] - 2025-11-26
+### Added
+- CLI:
+  - -F, --fail-on-ignored: to return error even when using -D (#828)
+- Schematic: Support for private fields (#812)
+- Global options:
+  - `update_pcb_text_cache`: Used to copy the text variables from the project
+    to the PCB file (#860 #861)
+  - `disable_kicad_cross_on_fab`: To avoid KiCad 9 crosses on Fab layer, so
+    only KiBot controls it (#866)
+- Internal templates:
+  - PCB2Blender_2_17: generates a pcb2blender 2.17 file to import on Blender
+- Pre-flights:
+  - `check_field`: option to exclude components from a check (#848)
+- Variants:
+  - Sub-boards: now you can specify a contour in an arbitrary layer.
+    (See yaqwsx/KiKit#846)
+- PCB2Blender_Tools: Experimental v2.17 file generation
+- Report: separated N/PTH slot sizes (#824)
+- VRML: workaround for KiCad 9 randomly failing to copy 3D models (#804)
+- Navigate Results, PCB Print, PcbDraw: Support for big SVGs (#851)
+- PCB Print: Workaround for KiCad 9.0.5 change in how holes are plotted when
+  a layer is not included (black instead of white).
+- Export_3D: `center` option to `origin` (#871)
+- Compress/Copy Files: Now `dest` also expands %X patterns (can be disabled)
+  (#873)
+- Worksheet: Support for paths relative to the project (#879)
+- Blender Export: Support for STL/OBJ/PLY/GLTF changes in Blender 4.2 (#880)
+
+### Fixed
+- User.N layer numbering. I.e. pcb_print issues with their numbering (#808)
+- KiCost: `kicost_config` not working (#815)
+- Huge memory usage for panels (#842)
+- Panelize: vjustify wrong choices (were the same as hjustify) (#846)
+- THT Resistors: Problems when using the STEP version of the model (#856)
+- Fancy stackup:
+  - Limit the decimals of the copper weight to 2 (#864)
+  - Buried vias issues on KiCad 9 (#870)
+- Draw stackup, Print drill table, Include table:
+  - Workaround for KiCad 9.0.5 broken API to GetTextBox
+
+
+### Changed
+- Filtered KiBot warnings are informed in the debug output (See #817)
+
+
 ## [1.8.4] - 2025-04-03
 ### Added
 - Support for the broken API in KiCad 9.0.1

@@ -426,7 +426,7 @@ class PanelizeText(PanelOptions):
             self.hjustify = 'center'
             """ [left,right,center] Horizontal justification of the text """
             self.vjustify = 'center'
-            """ [left,right,center] Vertical justification of the text """
+            """ [top,bottom,center] Vertical justification of the text """
             self.thickness = 0.3
             """ [number|string=0.3] Stroke thickness """
             self.layer = 'F.SilkS'

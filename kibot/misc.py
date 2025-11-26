@@ -6,6 +6,7 @@
 """ Miscellaneous definitions """
 
 from contextlib import contextmanager
+import hashlib
 import os
 import re
 from struct import unpack
@@ -50,6 +51,7 @@ CORRUPTED_PRO = 34
 BLENDER_ERROR = 35
 WARN_AS_ERROR = 36
 CHECK_FIELD = 37
+IGNORED_ERRORS = 38
 error_level_to_name = ['NONE',
                        'INTERNAL_ERROR',
                        'WRONG_ARGUMENTS',
@@ -87,7 +89,8 @@ error_level_to_name = ['NONE',
                        'CORRUPTED_PRO',
                        'BLENDER_ERROR',
                        'WARN_AS_ERROR',
-                       'CHECK_FIELD'
+                       'CHECK_FIELD',
+                       'IGNORED_ERRORS'
                        ]
 KICOST_SUBMODULE = '../submodules/KiCost/src/kicost'
 EXAMPLE_CFG = 'example_template.kibot.yaml'
@@ -100,6 +103,7 @@ KICAD_VERSION_6_0_2 = 60000020
 KICAD_VERSION_7_0_1 = 70000010
 KICAD_VERSION_7_0_1_1 = 70000011
 KICAD_VERSION_9_0_1 = 90000010
+KICAD_VERSION_9_0_5 = 90000050
 TRY_INSTALL_CHECK = 'Try running the installation checker: kibot-check'
 EMBED_PREFIX = 'kicad-embed://'
 
@@ -336,6 +340,9 @@ W_NODRILL = '(W170) '
 W_NOPCBTB = '(W171) '
 W_DEFNOSTR = '(W172) '
 W_CONVPDF = '(W173) '
+W_MISSWRL = '(W174) '
+W_STACKUP = '(W175) '
+W_NOVISLA = '(W176) '
 # Somehow arbitrary, the colors are real, but can be different
 PCB_MAT_COLORS = {'fr1': "937042", 'fr2': "949d70", 'fr3': "adacb4", 'fr4': "332B16", 'fr5': "6cc290"}
 PCB_FINISH_COLORS = {'hal': "8b898c", 'hasl': "8b898c", 'imag': "8b898c", 'enig': "cfb96e", 'enepig': "cfb96e",
@@ -651,3 +658,41 @@ def try_decode_utf8(data, where, logger):
         data = nres
         logger.non_critical_error('Using: '+data.rstrip())
     return data
+
+
+# Adapted from "Gemini 2.5 Pro Preview O5-O6" example
+def get_file_hash(filepath, algorithm="sha256", buffer_size=65536):
+    """
+    Calculates the hash of a file using the specified algorithm.
+
+    Args:
+        filepath (str): The path to the file.
+        algorithm (str): The hashing algorithm to use (e.g., 'md5', 'sha1', 'sha256', 'sha512').
+                         Defaults to 'sha256'.
+                         You can see available algorithms with `hashlib.algorithms_available`.
+        buffer_size (int): The size of the chunks to read from the file (in bytes).
+                           Defaults to 65536 (64KB).
+
+    Returns:
+        str: The hexadecimal representation of the file's hash.
+
+    Raises:
+        FileNotFoundError: If the file does not exist.
+        ValueError: If the specified algorithm is not supported by hashlib.
+    """
+    try:
+        # Create a hash object using the specified algorithm
+        hash_obj = hashlib.new(algorithm)
+    except ValueError:
+        raise ValueError(f"Unsupported hash algorithm: {algorithm}. "
+                         f"Supported: {sorted(hashlib.algorithms_available)}")
+
+    with open(filepath, 'rb') as f:  # Open the file in binary read mode
+        # Read the file in chunks
+        while True:
+            chunk = f.read(buffer_size)
+            if not chunk:
+                break
+            hash_obj.update(chunk)
+
+    return hash_obj.hexdigest()  # Get the hexadecimal digest of the hash
