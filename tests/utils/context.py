@@ -895,7 +895,7 @@ class TestContext(object):
         links = {}
         nr = '{http://schemas.openxmlformats.org/officeDocument/2006/relationships}'
         hlinks = root.find(ns+'hyperlinks')
-        if hlinks:
+        if hlinks is not None:
             for r in hlinks.iter(ns+'hyperlink'):
                 links[r.attrib['ref']] = r.attrib[nr+'id']
         # Read the strings
